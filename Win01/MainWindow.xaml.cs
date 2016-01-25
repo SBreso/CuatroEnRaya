@@ -24,5 +24,14 @@ namespace Win01
         {
             InitializeComponent();
         }
+
+        private void checkNewGame(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+        private void newGame(object sender, ExecutedRoutedEventArgs e)
+        {
+            MessageBox.Show("hola");
+        }
     }
 }
