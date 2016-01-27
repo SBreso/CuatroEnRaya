@@ -3,26 +3,62 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:x1="clr-namespace:Win01"
         Title="MainWindow" Height="525" Width="700" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type x1:Player}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Nombre}"/>
+                <Border Width="15" Height="15">
+                    <Image Source="{Binding Foto}"/>
+                </Border>
+                <TextBlock Text="{Binding tiempo}"/>
+                <TextBlock Text="{Binding tiempoTotal}"/>
+                <TextBlock Text="{Binding ganadas}"/>                
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
     <!--Comandos para shortKeys en Nuevo y Panel Izquierdo-->
     <Window.CommandBindings>
-        <CommandBinding Command="ApplicationCommands.New" CanExecute="checkNewGame" Executed="newGame"/>
-        <CommandBinding Command="ApplicationCommands.Paste" CanExecute="checkNewGame" Executed="newGame"/>
+        <CommandBinding Command="x1:Commands.NewGame" CanExecute="checkNewGame" Executed="newGame"/>
+        <CommandBinding Command="x1:Commands.ShowGamers" CanExecute="checkNewGame" Executed="newGame"/>
     </Window.CommandBindings>
     <DockPanel>
+        <!--MENU SUPERIOR-->
         <Menu IsMainMenu="True" DockPanel.Dock="Top" Background="#FFB8B4B4">
             <MenuItem Header="_Fichero" FontSize="14">
-                <MenuItem Header="Nuevo" Command="ApplicationCommands.New"/>
+                <MenuItem Header="Nuevo" Command="x1:Commands.NewGame"/>
             </MenuItem>
             <MenuItem Header="_Ver" FontSize="14">
                 <MenuItem Header="_Panel Izquierdo" IsCheckable="True" IsChecked="True"
-                          Command="ApplicationCommands.Paste"/>
+                          Command="x1:Commands.ShowGamers"/>
             </MenuItem>
         </Menu>
-
-        <StatusBar DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Background="#FFB8B4B4">
+        <!--BARRA PARA EL TIEMPO-->
+        <Rectangle DockPanel.Dock="Top" Height="50" Fill="#FF2069EA">
+            
+        </Rectangle>
+        <!--STATUS BAR-->
+        <StatusBar DockPanel.Dock="Bottom" Background="#FFB8B4B4">
             <StatusBarItem>
                 <TextBlock Text="hola"/>
             </StatusBarItem>
         </StatusBar>
+        <!--GRID PARA LOS JUGADORES-->
+        <Grid DockPanel.Dock="Left" Width="150">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <!--JUGADOR 1-->
+            <StackPanel Grid.Row="0" Background="#FFEABABA">
+                
+            </StackPanel>
+            <!--JUGADOR 2-->
+            <StackPanel Grid.Row="1" Background="#FFDACD46">
+                </StackPanel>
+        </Grid>
+        <!--TABLERO-->
+        <Grid Background="#FFF71919">
+            
+        </Grid>
     </DockPanel>
 </Window>

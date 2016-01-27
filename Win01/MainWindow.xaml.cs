@@ -34,4 +34,26 @@ namespace Win01
             MessageBox.Show("hola");
         }
     }
+    //Comandos    
+    public static class Commands
+    {
+        public static readonly RoutedUICommand NewGame = new RoutedUICommand(
+            "Accion cuando se pulsa",//descripcion
+            "NewGame",//accion
+            typeof(Commands),
+            new InputGestureCollection()
+            {
+                new KeyGesture(Key.N,ModifierKeys.Control)
+            }
+            );
+        public static readonly RoutedUICommand ShowGamers = new RoutedUICommand(
+            "Accion cuando se pulsa",//descripcion
+            "ShowGamers",//accion
+            typeof(Commands),
+            new InputGestureCollection()
+            {
+                new KeyGesture(Key.V,ModifierKeys.Control)
+            }
+            );
+    }
 }

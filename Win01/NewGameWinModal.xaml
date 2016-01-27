@@ -1,0 +1,47 @@
+﻿<Window x:Class="Win01.NewGameWinModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NewGameWinModal" Height="290" Width="365" MinWidth="365" MinHeight="290">
+        
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="Contrincante" Grid.Row="0" Grid.Column="0" Margin="5" VerticalAlignment="Center">
+            <StackPanel>
+                <RadioButton Content="Máquina" IsChecked="True"/>
+                <RadioButton Content="Dos jugadores"/>                
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Tamaño" Grid.Row="0" Grid.Column="1" Margin="5" VerticalAlignment="Center">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock DockPanel.Dock="Left" Text="Dimension x(>3)"/>
+                    <TextBox />
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <TextBlock DockPanel.Dock="Left" Text="Dimension y(>3)"/>
+                    <TextBox/>
+                </StackPanel>                
+            </DockPanel>
+        </GroupBox>
+        
+        <Button Grid.Row="2" Grid.Column="0" Width="100" Height="25"/>
+        <Button Grid.Row="2" Grid.Column="1" Width="100" Height="25"/>
+        <Expander Header="Avanzado" Grid.Row="1" VerticalAlignment="Top">
+            <StackPanel Background="#FFE5E5E5" Orientation="Horizontal">
+                <CheckBox>
+                    Con Tiempo
+                </CheckBox>
+                <Slider></Slider>
+                <TextBlock>10s</TextBlock>
+            </StackPanel>
+        </Expander>
+    </Grid>
+</Window>
