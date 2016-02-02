@@ -22,6 +22,7 @@ namespace Win01
             pcOption = true;
             xDim = 6;
             yDim = 5;
+            time = 10;
             playerList = new List<Player>();
         }
 

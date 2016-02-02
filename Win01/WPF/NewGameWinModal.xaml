@@ -38,7 +38,7 @@
                 <CheckBox x:Name="checkTime" IsChecked="True" Margin="2" Unchecked="checkTime_Unchecked" Checked="checkTime_Checked">
                     Con Tiempo
                 </CheckBox>
-                <Slider x:Name="sliderTime" Maximum="60" ValueChanged="Slider_ValueChanged" Width="169" Margin="2" SmallChange="1" Value="10"></Slider>
+                <Slider x:Name="sliderTime" Maximum="60" ValueChanged="Slider_ValueChanged" Width="169" Margin="2" SmallChange="1"></Slider>
                 <TextBlock x:Name="textBlockTime" Margin="2">10s</TextBlock>
             </StackPanel>
         </Expander>

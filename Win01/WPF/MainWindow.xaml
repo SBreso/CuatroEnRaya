@@ -11,9 +11,9 @@
                 <Border Background="{Binding ColorPieza}" Padding="5">
                     <Image Source="{Binding Foto}" Height="80" />
                 </Border>                
-                <TextBlock Text="{Binding tiempo}"/>
-                <TextBlock Text="{Binding tiempoTotal}"/>
-                <TextBlock Text="{Binding ganadas}"/>                
+                <TextBlock Text="{Binding TiempoAcumulado}"/>
+                <TextBlock Text="{Binding TiempoAcumuladoTotal}"/>
+                <TextBlock Text="{Binding Ganadas}"/>                
             </StackPanel>
         </DataTemplate>
     </Window.Resources>

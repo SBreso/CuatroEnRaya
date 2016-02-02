@@ -21,7 +21,7 @@ namespace Win01
     public partial class NewGameWinModal : Window
     {
         #region
-        public bool numPlayers;//true-->maquina & false-->2 players
+        public bool oponent;//true-->maquina & false-->2 players
         public bool timeIsChecked;
         public int x;
         public int y;
@@ -37,7 +37,8 @@ namespace Win01
             {
                 this.textX.Text = x.ToString();
                 this.textY.Text = y.ToString();
-                checkOponent(this.numPlayers);
+                checkOponent(this.oponent);
+                this.sliderTime.Value = time;
             }
             catch (Exception ex)
             {
@@ -130,7 +131,7 @@ namespace Win01
                 this.y = Int32.Parse(this.textY.Text);
                 this.time = (int)this.sliderTime.Value;
                 this.timeIsChecked = (bool)this.checkTime.IsChecked;
-                this.numPlayers = whatOponent();
+                this.oponent = whatOponent();
                 DialogResult = true;
             }
             catch (Exception ex)

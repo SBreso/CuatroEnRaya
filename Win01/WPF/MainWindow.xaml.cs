@@ -98,16 +98,17 @@ namespace Win01
                 NewGameWinModal newGame = new NewGameWinModal();
                 //pasar los parametros
                 newGame.Owner = this;
-                newGame.numPlayers = confi.pcOption;
+                newGame.oponent = confi.pcOption;
                 newGame.x = confi.xDim;
                 newGame.y = confi.yDim;
+                newGame.time = confi.time;
                 newGame.ShowDialog();
                 if (newGame.DialogResult == true)
                 {
                     //recibir los parametros
                     confi.xDim = newGame.x;
                     confi.yDim = newGame.y;
-                    confi.pcOption = newGame.numPlayers;
+                    confi.pcOption = newGame.oponent;
                     confi.time = newGame.time;
                     confi.isTimer = newGame.timeIsChecked;
                     //mostramos la de jugadores
