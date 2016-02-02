@@ -4,18 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7B3EF5F2-9214-4793-9662-15B0472387D4}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{420E5C90-B992-4907-A227-6B9D6ED4667E}</ProjectGuid>
+    <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Win01</RootNamespace>
-    <AssemblyName>Win01</AssemblyName>
+    <RootNamespace>Dictionary</RootNamespace>
+    <AssemblyName>Dictionary</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -25,7 +24,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -49,41 +47,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="WPF\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Debugger.cs" />
-    <Compile Include="WPF\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="WPF\NewGameWinModal.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WPF\PlayersWinModal.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="WPF\NewGameWinModal.xaml.cs">
-      <DependentUpon>NewGameWinModal.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Player.cs" />
-    <Compile Include="WPF\PlayersWinModal.xaml.cs">
-      <DependentUpon>PlayersWinModal.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -108,13 +71,47 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Resource Include="Dictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dictionary\Dictionary.csproj">
-      <Project>{420e5c90-b992-4907-a227-6b9d6ed4667e}</Project>
-      <Name>Dictionary</Name>
-    </ProjectReference>
+    <Resource Include="Images\Star_wars_longshadow-01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-03.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-04.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-05.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-06.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-07.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-08.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-09.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Star_wars_longshadow-12.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

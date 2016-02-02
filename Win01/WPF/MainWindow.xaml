@@ -2,14 +2,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:x1="clr-namespace:Win01"
-        Title="MainWindow" Height="525" Width="700" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="525" Width="700" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Window.Resources>
         <DataTemplate DataType="{x:Type x1:Player}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Nombre}"/>
-                <Border Width="15" Height="15">
-                    <Image Source="{Binding Foto}"/>
-                </Border>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Nombre}" FontWeight="Bold" FontSize="16"/>
+                <!--No hace el binding de colorPieza?????-->
+                <Border Background="{Binding ColorPieza}" Padding="5">
+                    <Image Source="{Binding Foto}" Height="80" />
+                </Border>                
                 <TextBlock Text="{Binding tiempo}"/>
                 <TextBlock Text="{Binding tiempoTotal}"/>
                 <TextBlock Text="{Binding ganadas}"/>                
@@ -18,8 +19,8 @@
     </Window.Resources>
     <!--Comandos para shortKeys en Nuevo y Panel Izquierdo-->
     <Window.CommandBindings>
-        <CommandBinding Command="x1:Commands.NewGame" CanExecute="checkNewGame" Executed="newGame"/>
-        <CommandBinding Command="x1:Commands.ShowGamers" CanExecute="checkNewGame" Executed="newGame"/>
+        <CommandBinding Command="x1:Commands.NewGame" CanExecute="checkGameOnCourse" Executed="newGame"/>
+        <CommandBinding Command="x1:Commands.ShowGamers" CanExecute="checkShowPlayers" Executed="showPlayers"/>
     </Window.CommandBindings>
     <DockPanel>
         <!--MENU SUPERIOR-->
@@ -28,37 +29,41 @@
                 <MenuItem Header="Nuevo" Command="x1:Commands.NewGame"/>
             </MenuItem>
             <MenuItem Header="_Ver" FontSize="14">
-                <MenuItem Header="_Panel Izquierdo" IsCheckable="True" IsChecked="True"
+                <MenuItem Name="itemShowPlayers" Header="_Panel Izquierdo" IsCheckable="True" IsChecked="True"
                           Command="x1:Commands.ShowGamers"/>
             </MenuItem>
         </Menu>
-        <!--BARRA PARA EL TIEMPO-->
-        <Rectangle DockPanel.Dock="Top" Height="50" Fill="#FF2069EA">
-            
-        </Rectangle>
         <!--STATUS BAR-->
         <StatusBar DockPanel.Dock="Bottom" Background="#FFB8B4B4">
             <StatusBarItem>
                 <TextBlock Text="hola"/>
             </StatusBarItem>
         </StatusBar>
+        <DockPanel Name="mainDock">
+        <!--BARRA PARA EL TIEMPO-->
+        <Rectangle DockPanel.Dock="Top" Height="50" Fill="#FF2069EA">
+            
+        </Rectangle>
+        
         <!--GRID PARA LOS JUGADORES-->
-        <Grid DockPanel.Dock="Left" Width="150">
+        <Grid Name="gridPlayers" DockPanel.Dock="Left" Width="150">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <!--JUGADOR 1-->
-            <StackPanel Grid.Row="0" Background="#FFEABABA">
-                
-            </StackPanel>
+            <Border Grid.Row="0">
+                <Label x:Name="playerOne" HorizontalContentAlignment="Center"/>
+            </Border>
             <!--JUGADOR 2-->
-            <StackPanel Grid.Row="1" Background="#FFDACD46">
-                </StackPanel>
+            <Border Grid.Row="1">
+                <Label x:Name="playerTwo" HorizontalContentAlignment="Center"/>
+            </Border>
         </Grid>
         <!--TABLERO-->
         <Grid Background="#FFF71919">
             
         </Grid>
+        </DockPanel>
     </DockPanel>
 </Window>

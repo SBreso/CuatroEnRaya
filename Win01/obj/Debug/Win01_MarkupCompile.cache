@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-E:\DAM\VORO_2DAM\DI\Proyecto\Win01\obj\Debug\
+G:\DAM\VORO_2DAM\DI\Proyecto\Win01\obj\Debug\
 Win01
 none
 false
 DEBUG;TRACE
-E:\DAM\VORO_2DAM\DI\Proyecto\Win01\App.xaml
-221465121
+G:\DAM\VORO_2DAM\DI\Proyecto\Win01\App.xaml
+3-1429418701
 
-7-481765657
-12-1401562060
-MainWindow.xaml;NewGameWinModal.xaml;
+101788745756
+13-127681743
+WPF\MainWindow.xaml;WPF\NewGameWinModal.xaml;WPF\PlayersWinModal.xaml;
 
 False
 

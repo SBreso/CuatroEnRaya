@@ -1,0 +1,102 @@
+﻿<Window x:Class="Win01.PlayersWinModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:x1="clr-namespace:Win01"
+        Title="PlayersModal" Height="300" Width="330" Loaded="Window_Loaded" MinWidth="330" MinHeight="300">
+    <Window.Resources>
+        <DataTemplate x:Key="contentTemplate" DataType="{x:Type x1:Player}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Nombre" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBox Text="{Binding Nombre}" Grid.Row="0" HorizontalAlignment="Left" Height="Auto" Margin="59,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <Grid Grid.Row="1" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Column="0">
+                        <Button DockPanel.Dock="Top" Content="Foto..." Margin="1,10,10,0" VerticalAlignment="Top" Click="openFileDialog"/>
+                        <Image Source="{Binding URIFoto}" Height="100" Width="100" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Bottom">
+                            <Image.OpacityMask>
+                                <ImageBrush/>
+                            </Image.OpacityMask>
+                        </Image>
+                    </DockPanel>
+                    <ListBox Grid.Column="1" Margin="10,10,10,0" Height="133" VerticalAlignment="Top" 
+                             ItemsSource="{StaticResource Colors}" SelectedItem="{Binding ColorPieza}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="20" Height="15" Fill="{Binding}"/>
+                                    <Label Content="{Binding}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+       
+    </Window.Resources>
+    <Grid>
+        <TabControl Name="tabControl">
+            <TabControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type x1:Player}">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Height="15" Width="15" Fill="{Binding ColorPieza}" Margin="2"/>
+                        <TextBlock Text="{Binding Nombre}" Margin="2"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="{x:Type x1:Player}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="Nombre" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <TextBox Text="{Binding Nombre}" Grid.Row="0" HorizontalAlignment="Left" Height="Auto" Margin="59,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                        <Grid Grid.Row="1" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <DockPanel Grid.Column="0">
+                                <Button DockPanel.Dock="Top" Content="Foto..." Margin="1,10,10,0" VerticalAlignment="Top" Click="openFileDialog"/>
+                                <Image Source="{Binding URIFoto}" Height="100" Width="100" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Bottom">
+                                    <Image.OpacityMask>
+                                        <ImageBrush/>
+                                    </Image.OpacityMask>
+                                </Image>
+                            </DockPanel>
+                            <ListBox Grid.Column="1" Margin="10,10,10,0" Height="133" VerticalAlignment="Top" 
+                             ItemsSource="{StaticResource Colors}" SelectedItem="{Binding ColorPieza}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Rectangle Width="20" Height="15" Fill="{Binding}"/>
+                                            <Label Content="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+        <Grid Height="50" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Aceptar" Width="100" Height="25" Click="button_click"/>
+            <Button Content="Cancelar" Grid.Column="1" Width="100" Height="25" Click="button_click_1"/>
+        </Grid>
+
+    </Grid>
+</Window>

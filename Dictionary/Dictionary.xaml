@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <x:Array x:Key="Colors" Type="{x:Type SolidColorBrush}">
+        <SolidColorBrush>#FF801717</SolidColorBrush>
+        <SolidColorBrush>#FFA6B835</SolidColorBrush>
+        <SolidColorBrush>#FF329B4F</SolidColorBrush>
+        <SolidColorBrush>#FF5D1678</SolidColorBrush>
+        <SolidColorBrush>#FFCFCACA</SolidColorBrush>
+        <SolidColorBrush>#FFAACACA</SolidColorBrush>
+    </x:Array>
+    <x:Array x:Key="Icons" Type="{x:Type BitmapImage}">
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-01.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-02.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-03.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-04.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-05.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-06.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-07.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-08.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-09.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-10.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-11.png"/>
+    <BitmapImage UriSource="./Images/Star_wars_longshadow-12.png"/>
+    </x:Array>
+</ResourceDictionary>

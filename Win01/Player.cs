@@ -30,12 +30,16 @@ namespace Win01
             get { return foto; }
             set { foto = value; }
         }
-
         /// <summary>
         /// Asigna la URI del la foto
         /// </summary>
-        public String URIFoto { set { foto = new BitmapImage(new Uri(value)); } }
-
+        public String URIFoto
+        {
+            set
+            {
+                foto = new BitmapImage(new Uri(value));
+            }
+        }
         /// <summary>
         /// Devuelve o asigna el número de partidas ganadas por el jugador
         /// </summary>
