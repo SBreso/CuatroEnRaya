@@ -42,7 +42,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
         /// <summary>
@@ -64,7 +64,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
         /// <summary>
@@ -80,7 +80,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
         /// <summary>
@@ -97,7 +97,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }            
         }
         /// <summary>
@@ -114,7 +114,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
         /// <summary>
@@ -136,7 +136,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
         /// <summary>
@@ -151,7 +151,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
                 return false;
             }
         }
@@ -187,7 +187,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }        
     }

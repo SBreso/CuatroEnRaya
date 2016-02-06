@@ -1,21 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Win01
 {
-    static class Debugger
+    class Debugger
     {
-        public static void Print(Exception ex, object sender)
+        public enum ENVIORMENT { DEVELOPMENT, PRODUCTION };
+        private static ENVIORMENT value;
+        public Debugger(ENVIORMENT v)
         {
-            Console.WriteLine(sender.ToString()+"\n"+String.Format("{0}--{1}", ex.Message, ex.GetType()));
+            value = v;
+            Debug.Listeners.Add(new TextWriterTraceListener("./NET.log"));
+            Debug.AutoFlush = true;
+        }
+        static int i = 1;
+        public static void WriteException(Exception ex, object sender)
+        {
+            if (Debugger.value == ENVIORMENT.PRODUCTION)
+            {
+                Debug.WriteLine(String.Format((i++) + "Error at: {}", sender.GetType()));
+                Debug.Indent();
+                Debug.WriteLine(String.Format("Type: {0}", ex.GetType()));
+                Debug.WriteLine(String.Format("Message: {0}", ex.Message));
+                Debug.WriteLine(String.Format("Source: {0}", ex.Source));
+                Debug.WriteLine(String.Format("Metod: {0}", ex.TargetSite));
+                Debug.WriteLine(String.Format("Help: {0}", ex.HelpLink));
+                Debug.Unindent();
+            }
+            else
+            {
+                MessageBox.Show(String.Format("{0} at: {1}",ex.Message,ex.TargetSite),"¡¡ERROR!!",MessageBoxButton.OK);
+            }
         }
 
-        public static void Print(String s)
+        public static void Write(String s)
         {
-            Console.WriteLine(s);
+            if (Debugger.value == ENVIORMENT.PRODUCTION)
+            {
+                Debug.WriteLine("Message: " + s);
+            }
+            else
+            {
+                MessageBox.Show(s);
+            }
         }
     }
 }

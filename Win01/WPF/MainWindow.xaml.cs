@@ -50,6 +50,7 @@ namespace Win01
             List<BitmapImage> iconList = ((Array)FindResource("Icons")).Cast<BitmapImage>().ToList();           
             InitializeComponent();
             confi = new Configuration(iconList,colorsList);
+            Debugger d = new Debugger(Debugger.ENVIORMENT.DEVELOPMENT);
         }
         /// <summary>
         /// Loaded
@@ -64,7 +65,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex,this);
+                Debugger.WriteException(ex,this);
             }
         }
         //Checks y execute de los comandos
@@ -146,7 +147,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
         /// <summary>
@@ -187,7 +188,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
         #endregion

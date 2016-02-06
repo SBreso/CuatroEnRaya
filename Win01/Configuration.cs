@@ -51,7 +51,7 @@ namespace Win01
             }
             catch (Exception ex)
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Win01
             }
             catch (Exception ex) 
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
             }
         }
 
@@ -80,7 +80,7 @@ namespace Win01
             }
             catch (Exception ex) 
             {
-                Debugger.Print(ex, this);
+                Debugger.WriteException(ex, this);
                 return null;
             }
         }
