@@ -30,7 +30,7 @@ namespace Win01
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            tabControl.ItemsSource = players;
+            tabControl.ItemsSource =players;
             tabControl.SelectedIndex = 0;
         }
 
@@ -48,11 +48,20 @@ namespace Win01
         {
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.Filter = "Archivos de imágen (.jpg)|*.jpg|All Files (*.*)|*.*";
-            openFile.Multiselect = false;
+            //openFile.Multiselect = false;
             if (openFile.ShowDialog() == true)
             {
-                players[tabControl.SelectedIndex].URIFoto = openFile.FileName.ToString();
+                players[tabControl.SelectedIndex].URIFoto = openFile.FileName;
+                players[tabControl.SelectedIndex].RaisePropertyChanged("URIFoto");
+                
             }
+            //tabControl.Items.Refresh();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox=(TextBox)sender;
+            players[tabControl.SelectedIndex].Nombre = textBox.Text;
         }
     }
 }

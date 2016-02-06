@@ -20,7 +20,12 @@ namespace Win01
         /// <summary>
         /// Devuelve o asigna el nombre del jugador
         /// </summary>
-        public String Nombre { get; set; }
+        public String Nombre
+        {
+            get;
+            set;
+
+        }
 
         /// <summary>
         /// Devuele o asigna la imagen del jugador

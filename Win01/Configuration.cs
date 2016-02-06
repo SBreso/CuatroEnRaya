@@ -5,7 +5,7 @@ using System.Windows.Media.Imaging;
 
 namespace Win01
 {
-    class Configuration
+    public class Configuration
     {
         public bool pcOption;
         public bool isTimer;
@@ -74,9 +74,9 @@ namespace Win01
                 Player pc = new Player();
                 pc.Nombre = "Maquina";
                 pc.Foto = iconList[11];
-                pc.ColorPieza = colorsList[5];
-                return pc;
+                pc.ColorPieza = colorsList[5];                
                 if (pcOption) { playerList.Add(pc); }
+                return pc;
             }
             catch (Exception ex) 
             {

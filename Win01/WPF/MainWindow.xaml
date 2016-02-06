@@ -16,6 +16,18 @@
                 <Label Content="{Binding Ganadas}" ContentStringFormat="Ganadas: {0}" />                
             </StackPanel>
         </DataTemplate>
+        <LinearGradientBrush x:Key="linear">
+            <GradientStop Color="AliceBlue" Offset="0.6"/>
+            <GradientStop Color="Red" Offset="0"/>
+        </LinearGradientBrush>
+        
+        <Style x:Key="hi" TargetType="{x:Type MenuItem}">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Background" Value="{StaticResource linear}"/>
+            <Setter Property="BorderThickness" Value="5"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+
+        </Style>
     </Window.Resources>
     <!--Comandos para shortKeys en Nuevo y Panel Izquierdo-->
     <Window.CommandBindings>
@@ -25,7 +37,7 @@
     <DockPanel>
         <!--MENU SUPERIOR-->
         <Menu IsMainMenu="True" DockPanel.Dock="Top" Background="#FFB8B4B4">
-            <MenuItem Header="_Fichero" FontSize="14">
+            <MenuItem Header="_Fichero" FontSize="14" Style="{StaticResource hi}">
                 <MenuItem Header="Nuevo" Command="x1:Commands.NewGame"/>
             </MenuItem>
             <MenuItem Header="_Ver" FontSize="14">

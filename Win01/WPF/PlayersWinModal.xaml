@@ -20,9 +20,6 @@
                     <DockPanel Grid.Column="0">
                         <Button DockPanel.Dock="Top" Content="Foto..." Margin="1,10,10,0" VerticalAlignment="Top" Click="openFileDialog"/>
                         <Image Source="{Binding URIFoto}" Height="100" Width="100" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Bottom">
-                            <Image.OpacityMask>
-                                <ImageBrush/>
-                            </Image.OpacityMask>
                         </Image>
                     </DockPanel>
                     <ListBox Grid.Column="1" Margin="10,10,10,0" Height="133" VerticalAlignment="Top" 
@@ -59,7 +56,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Content="Nombre" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <TextBox Text="{Binding Nombre}" Grid.Row="0" HorizontalAlignment="Left" Height="Auto" Margin="59,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                        <TextBox Text="{Binding Nombre}" Grid.Row="0" HorizontalAlignment="Left" Height="Auto" Margin="59,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
                         <Grid Grid.Row="1" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -67,7 +64,7 @@
                             </Grid.ColumnDefinitions>
                             <DockPanel Grid.Column="0">
                                 <Button DockPanel.Dock="Top" Content="Foto..." Margin="1,10,10,0" VerticalAlignment="Top" Click="openFileDialog"/>
-                                <Image Source="{Binding URIFoto}" Height="100" Width="100" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Bottom">
+                                <Image Source="{Binding Foto}" Height="100" Width="100" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Bottom">
                                     <Image.OpacityMask>
                                         <ImageBrush/>
                                     </Image.OpacityMask>

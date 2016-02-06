@@ -118,11 +118,13 @@ namespace Win01
                     playersWinModal.pcOption = confi.pcOption;
                     confi.DefaoultGamers();//creamos los jugadores por defecto 1 ó 2
                     playersWinModal.players = confi.playerList;
+                    //playersWinModal.config = confi;
                     playersWinModal.ShowDialog();
                     if (playersWinModal.DialogResult == true)
                     {
                         //recibir parametros 
                         confi.playerList = playersWinModal.players;
+                        //confi= playersWinModal.config;
                         //mostramos el panel
                         this.playerOne.Content = confi.playerList[0];
                         if (confi.pcOption)//si es contra la maquina, lo creo y lo muestro
