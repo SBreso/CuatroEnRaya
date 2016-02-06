@@ -84,40 +84,6 @@ namespace Win01
             }
         }
         /// <summary>
-        /// timeUnchecket-->slider unEnabled
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void checkTime_Unchecked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                this.textBlockTime.IsEnabled = false;
-                this.sliderTime.IsEnabled = false;
-            }
-            catch (Exception ex)
-            {
-                Debugger.WriteException(ex, this);
-            }            
-        }
-        /// <summary>
-        /// timeChecket-->slider enabled
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void checkTime_Checked(object sender, RoutedEventArgs e)
-        {
-            try 
-            {
-                this.textBlockTime.IsEnabled = true;
-                this.sliderTime.IsEnabled = true;
-            }
-            catch (Exception ex)
-            {
-                Debugger.WriteException(ex, this);
-            }
-        }
-        /// <summary>
         /// Aceptar
         /// </summary>
         /// <param name="sender"></param>
@@ -184,6 +150,31 @@ namespace Win01
                     e.Handled = true;
                 }
 
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+        /// <summary>
+        /// Chequear el tiempo
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkTime_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if ((bool)checkTime.IsChecked)
+                {
+                    sliderTime.IsEnabled = true;
+                    textBlockTime.IsEnabled = true;
+                }
+                else
+                {
+                    sliderTime.IsEnabled = false;
+                    textBlockTime.IsEnabled = false;
+                }
             }
             catch (Exception ex)
             {

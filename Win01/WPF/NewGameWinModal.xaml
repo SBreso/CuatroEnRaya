@@ -35,7 +35,7 @@
         </Grid>        
         <Expander Header="Avanzado" Grid.Row="1" IsExpanded="True" MinHeight="100" VerticalAlignment="Center">
             <StackPanel Background="White" Orientation="Horizontal" VerticalAlignment="Top">
-                <CheckBox x:Name="checkTime" IsChecked="True" Margin="2" Unchecked="checkTime_Unchecked" Checked="checkTime_Checked">
+                <CheckBox x:Name="checkTime" IsChecked="True" Margin="2"  Click="checkTime_Click">
                     Con Tiempo
                 </CheckBox>
                 <Slider x:Name="sliderTime" Maximum="60" ValueChanged="Slider_ValueChanged" Width="169" Margin="2" SmallChange="1"></Slider>

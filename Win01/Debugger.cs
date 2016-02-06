@@ -34,7 +34,7 @@ namespace Win01
             }
             else
             {
-                MessageBox.Show(String.Format("{0} at: {1}",ex.Message,ex.TargetSite),"¡¡ERROR!!",MessageBoxButton.OK);
+                MessageBox.Show(String.Format("{0} at: {1} in {2}",ex.Message,ex.TargetSite,ex.Source),"¡¡ERROR!!",MessageBoxButton.OK);
             }
         }
 
