@@ -4,7 +4,7 @@
         xmlns:x1="clr-namespace:Win01"
         Title="PlayersModal" Height="300" Width="330" Loaded="Window_Loaded" MinWidth="330" MinHeight="300">
     <Window.Resources>
-        <DataTemplate x:Key="contentTemplate" DataType="{x:Type x1:Player}">
+        <!--<DataTemplate x:Key="contentTemplate" DataType="{x:Type x1:Player}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
@@ -35,7 +35,7 @@
                     </ListBox>
                 </Grid>
             </Grid>
-        </DataTemplate>
+        </DataTemplate>-->
        
     </Window.Resources>
     <Grid>
@@ -44,7 +44,7 @@
                 <DataTemplate DataType="{x:Type x1:Player}">
                     <StackPanel Orientation="Horizontal">
                         <Ellipse Height="15" Width="15" Fill="{Binding ColorPieza}" Margin="2"/>
-                        <TextBlock Text="{Binding Nombre}" Margin="2"/>
+                        <TextBlock Text="Jugador" Margin="2"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
@@ -56,19 +56,15 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Content="Nombre" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <TextBox Text="{Binding Nombre}" Grid.Row="0" HorizontalAlignment="Left" Height="Auto" Margin="59,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
+                        <TextBox x:Name="textName" Text="{Binding Nombre}" Grid.Row="0" HorizontalAlignment="Left" Height="Auto" Margin="59,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
                         <Grid Grid.Row="1" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <DockPanel Grid.Column="0">
+                            <DockPanel x:Name="dock" Grid.Column="0">
                                 <Button DockPanel.Dock="Top" Content="Foto..." Margin="1,10,10,0" VerticalAlignment="Top" Click="openFileDialog"/>
-                                <Image Source="{Binding Foto}" Height="100" Width="100" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Bottom">
-                                    <Image.OpacityMask>
-                                        <ImageBrush/>
-                                    </Image.OpacityMask>
-                                </Image>
+                                <Image x:Name="foto" Source="{Binding Foto}" Height="100" Width="100" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Bottom"/>                                
                             </DockPanel>
                             <ListBox Grid.Column="1" Margin="10,10,10,0" Height="133" VerticalAlignment="Top" 
                              ItemsSource="{StaticResource Colors}" SelectedItem="{Binding ColorPieza}">

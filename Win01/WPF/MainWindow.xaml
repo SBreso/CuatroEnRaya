@@ -7,7 +7,6 @@
         <DataTemplate DataType="{x:Type x1:Player}">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="{Binding Nombre}" FontWeight="Bold" FontSize="16"/>
-                <!--No hace el binding de colorPieza?????-->
                 <Border Background="{Binding ColorPieza}" Padding="5">
                     <Image Source="{Binding Foto}" Height="80" />
                 </Border>                
@@ -16,18 +15,6 @@
                 <Label Content="{Binding Ganadas}" ContentStringFormat="Ganadas: {0}" />                
             </StackPanel>
         </DataTemplate>
-        <LinearGradientBrush x:Key="linear">
-            <GradientStop Color="AliceBlue" Offset="0.6"/>
-            <GradientStop Color="Red" Offset="0"/>
-        </LinearGradientBrush>
-        
-        <Style x:Key="hi" TargetType="{x:Type MenuItem}">
-            <Setter Property="Margin" Value="2"/>
-            <Setter Property="Background" Value="{StaticResource linear}"/>
-            <Setter Property="BorderThickness" Value="5"/>
-            <Setter Property="BorderBrush" Value="Black"/>
-
-        </Style>
     </Window.Resources>
     <!--Comandos para shortKeys en Nuevo y Panel Izquierdo-->
     <Window.CommandBindings>
@@ -37,7 +24,7 @@
     <DockPanel>
         <!--MENU SUPERIOR-->
         <Menu IsMainMenu="True" DockPanel.Dock="Top" Background="#FFB8B4B4">
-            <MenuItem Header="_Fichero" FontSize="14" Style="{StaticResource hi}">
+            <MenuItem Header="_Fichero" FontSize="14">
                 <MenuItem Header="Nuevo" Command="x1:Commands.NewGame"/>
             </MenuItem>
             <MenuItem Header="_Ver" FontSize="14">
@@ -53,24 +40,18 @@
         </StatusBar>
         <DockPanel Name="mainDock">
         <!--BARRA PARA EL TIEMPO-->
-        <Rectangle DockPanel.Dock="Top" Height="50" Fill="#FF2069EA">
-            
-        </Rectangle>
-        
-        <!--GRID PARA LOS JUGADORES-->
+            <Rectangle DockPanel.Dock="Top" Height="50" Fill="#FF2069EA"/>
+
+            <!--GRID PARA LOS JUGADORES-->
         <Grid Name="gridPlayers" DockPanel.Dock="Left" Width="150">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <!--JUGADOR 1-->
-            <Border Grid.Row="0">
-                <Label x:Name="playerOne" HorizontalContentAlignment="Center"/>
-            </Border>
+            <Label Grid.Row="0" x:Name="playerOne" HorizontalContentAlignment="Center"/>           
             <!--JUGADOR 2-->
-            <Border Grid.Row="1">
-                <Label x:Name="playerTwo" HorizontalContentAlignment="Center"/>
-            </Border>
+            <Label  Grid.Row="1" x:Name="playerTwo" HorizontalContentAlignment="Center"/>            
         </Grid>
         <!--TABLERO-->
         <Grid Background="#FFF71919">

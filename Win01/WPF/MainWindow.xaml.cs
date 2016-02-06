@@ -117,7 +117,7 @@ namespace Win01
                     playersWinModal.Owner = this;                    
                     //pasar parametros, pasamos los jugadores
                     playersWinModal.pcOption = confi.pcOption;
-                    confi.DefaoultGamers();//creamos los jugadores por defecto 1 ó 2
+                    confi.DefaultGamers();//creamos los jugadores por defecto 1 ó 2
                     playersWinModal.players = confi.playerList;
                     //playersWinModal.config = confi;
                     playersWinModal.ShowDialog();

@@ -61,8 +61,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Debugger.cs" />
+    <Compile Include="Utils\Configuration.cs" />
+    <Compile Include="Utils\Debugger.cs" />
     <Compile Include="WPF\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -80,7 +80,7 @@
     <Compile Include="WPF\NewGameWinModal.xaml.cs">
       <DependentUpon>NewGameWinModal.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Player.cs" />
+    <Compile Include="Utils\Player.cs" />
     <Compile Include="WPF\PlayersWinModal.xaml.cs">
       <DependentUpon>PlayersWinModal.xaml</DependentUpon>
     </Compile>
