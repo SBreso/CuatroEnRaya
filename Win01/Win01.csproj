@@ -61,6 +61,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Motor.cs" />
     <Compile Include="Utils\Configuration.cs" />
     <Compile Include="Utils\Debugger.cs" />
     <Compile Include="WPF\MainWindow.xaml.cs">

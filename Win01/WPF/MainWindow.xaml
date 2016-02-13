@@ -31,12 +31,11 @@
                 <MenuItem Name="itemShowPlayers" Header="_Panel Izquierdo" IsCheckable="True" IsChecked="True"
                           Command="x1:Commands.ShowGamers"/>
             </MenuItem>
-            <MenuItem Header="hola" Click="MenuItem_Click_1" />
         </Menu>
         <!--STATUS BAR-->
         <StatusBar DockPanel.Dock="Bottom" Background="#FFB8B4B4">
             <StatusBarItem>
-                <TextBlock Text="hola"/>
+                <TextBlock Name="statuBar"/>
             </StatusBarItem>
         </StatusBar>
         <DockPanel Name="mainDock">
@@ -54,7 +53,8 @@
                 <Label  Grid.Row="1" x:Name="playerTwo" HorizontalContentAlignment="Center"/>
             </Grid>
             <!--TABLERO-->
-            <Grid x:Name="table"/> 
+            <Grid x:Name="table">
+            </Grid> 
         </DockPanel>
     </DockPanel>
 </Window>
