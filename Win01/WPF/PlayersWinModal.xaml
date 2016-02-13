@@ -62,10 +62,8 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <DockPanel x:Name="dock" Grid.Column="0">
-                                <Button DockPanel.Dock="Top" Content="Foto..." Margin="1,10,10,0" VerticalAlignment="Top" Click="openFileDialog"/>
-                                <Image x:Name="foto" Source="{Binding Foto}" Height="100" Width="100" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Bottom"/>                                
-                            </DockPanel>
+                            <Button DockPanel.Dock="Top" Content="Foto..." Margin="1,10,10,7" VerticalAlignment="Top" Click="openFileDialog"/>
+                            <Image x:Name="foto" Source="{Binding Foto}" Height="100" Width="100" Margin="0,50,0,0"/>   
                             <ListBox Grid.Column="1" Margin="10,10,10,0" Height="133" VerticalAlignment="Top" 
                              ItemsSource="{StaticResource Colors}" SelectedItem="{Binding ColorPieza}">
                                 <ListBox.ItemTemplate>

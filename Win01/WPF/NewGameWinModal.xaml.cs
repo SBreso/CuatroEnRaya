@@ -21,11 +21,16 @@ namespace Win01
     public partial class NewGameWinModal : Window
     {
         #region
-        public bool oponent;//true-->maquina & false-->2 players
-        public bool timeIsChecked;
-        public int x;
-        public int y;
-        public int time;
+        public bool Oponent { get{return oponent;} set{oponent=value;} }
+        public bool TimeIsChecked { get{return timeIsChecked;} set{timeIsChecked=value;}}
+        public int X { get { return x; } set { x = value; } }
+        public int Y { get { return y; } set { y = value; } }
+        public int Time { get{return time;} set{time=value;} }
+        private bool oponent;//true-->maquina & false-->2 players
+        private bool timeIsChecked;
+        private int x;
+        private int y;
+        private int time;
         #endregion
         public NewGameWinModal()
         {
@@ -92,12 +97,20 @@ namespace Win01
         {
             try
             {
-                //establecer los valores
-                this.x = Int32.Parse(this.textX.Text);
-                this.y = Int32.Parse(this.textY.Text);
-                this.time = (int)this.sliderTime.Value;
-                this.timeIsChecked = (bool)this.checkTime.IsChecked;
-                this.oponent = whatOponent();
+                //establecer los valores. Controlamos que no se pase poniendo filas y columnas
+                X = Int32.Parse(this.textX.Text);
+                if (X > 8)
+                {
+                    X = 8;
+                }
+                Y = Int32.Parse(this.textY.Text);
+                if (Y > 10)
+                {
+                    Y = 10;
+                }
+                Time = (int)this.sliderTime.Value;
+                TimeIsChecked = (bool)this.checkTime.IsChecked;
+                Oponent = whatOponent();
                 DialogResult = true;
             }
             catch (Exception ex)

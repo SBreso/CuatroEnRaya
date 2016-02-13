@@ -20,8 +20,10 @@ namespace Win01
     /// </summary>
     public partial class PlayersWinModal : Window
     {
-        public List<Player> players = new List<Player>();
-        public bool pcOption;
+        public List<Player> Players { get { return players; } set { players = value; } }
+        public bool PcOption { get { return pcOption; } set { pcOption = value; } }
+        private List<Player> players;
+        private bool pcOption;
 
         public PlayersWinModal()
         {
@@ -35,12 +37,20 @@ namespace Win01
             
             //tabControl.GetBindingExpression(Image.SourceProperty).UpdateTarget();
         }
-
+        /// <summary>
+        /// Aceptar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button_click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
-
+        /// <summary>
+        /// Cancelar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button_click_1(object sender, RoutedEventArgs e)
         {
             DialogResult = false;          
@@ -56,16 +66,20 @@ namespace Win01
                 if (openFile.ShowDialog() == true)
                 {
                     players[tabControl.SelectedIndex].URIFoto = openFile.FileName;
-                    players[tabControl.SelectedIndex].RaisePropertyChanged("URIFoto");
+                    //players[tabControl.SelectedIndex].RaisePropertyChanged("URIFoto");
                 }
-                tabControl.Items.Refresh();
+                //tabControl.Items.Refresh();
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
             }
         }
-
+        /// <summary>
+        /// Controlamos que el nombre del jugador cambie
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             try

@@ -9,10 +9,10 @@
                 <TextBlock Text="{Binding Nombre}" FontWeight="Bold" FontSize="16"/>
                 <Border Background="{Binding ColorPieza}" Padding="5">
                     <Image Source="{Binding Foto}" Height="80" />
-                </Border>                
+                </Border>
                 <Label Content="{Binding TiempoAcumulado}" ContentStringFormat="Tiempo: {0} s"/>
                 <Label Content="{Binding TiempoAcumuladoTotal}" ContentStringFormat="Tiempo acumulado: {0} s" />
-                <Label Content="{Binding Ganadas}" ContentStringFormat="Ganadas: {0}" />                
+                <Label Content="{Binding Ganadas}" ContentStringFormat="Ganadas: {0}" />
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
@@ -31,6 +31,7 @@
                 <MenuItem Name="itemShowPlayers" Header="_Panel Izquierdo" IsCheckable="True" IsChecked="True"
                           Command="x1:Commands.ShowGamers"/>
             </MenuItem>
+            <MenuItem Header="hola" Click="MenuItem_Click_1" />
         </Menu>
         <!--STATUS BAR-->
         <StatusBar DockPanel.Dock="Bottom" Background="#FFB8B4B4">
@@ -39,24 +40,21 @@
             </StatusBarItem>
         </StatusBar>
         <DockPanel Name="mainDock">
-        <!--BARRA PARA EL TIEMPO-->
-            <Rectangle DockPanel.Dock="Top" Height="50" Fill="#FF2069EA"/>
-
+            <!--BARRA PARA EL TIEMPO-->
+            <Rectangle x:Name="TimeRectabgle" DockPanel.Dock="Top" Height="50" Fill="#FF2069EA"/>
             <!--GRID PARA LOS JUGADORES-->
-        <Grid Name="gridPlayers" DockPanel.Dock="Left" Width="150">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <!--JUGADOR 1-->
-            <Label Grid.Row="0" x:Name="playerOne" HorizontalContentAlignment="Center"/>           
-            <!--JUGADOR 2-->
-            <Label  Grid.Row="1" x:Name="playerTwo" HorizontalContentAlignment="Center"/>            
-        </Grid>
-        <!--TABLERO-->
-        <Grid Background="#FFF71919">
-            
-        </Grid>
+            <Grid Name="gridPlayers" DockPanel.Dock="Left" Width="150">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <!--JUGADOR 1-->
+                <Label Grid.Row="0" x:Name="playerOne" HorizontalContentAlignment="Center"/>
+                <!--JUGADOR 2-->
+                <Label  Grid.Row="1" x:Name="playerTwo" HorizontalContentAlignment="Center"/>
+            </Grid>
+            <!--TABLERO-->
+            <Grid x:Name="table"/> 
         </DockPanel>
     </DockPanel>
 </Window>
