@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Win01
         public Debugger(ENVIORMENT v)
         {
             value = v;
-            Debug.Listeners.Add(new TextWriterTraceListener("./NET.log"));
+            Debug.Listeners.Add(new TextWriterTraceListener(File.Create("./net.log")));
             Debug.AutoFlush = true;
         }
         static int i = 1;
@@ -42,11 +43,11 @@ namespace Win01
         {
             if (Debugger.value == ENVIORMENT.PRODUCTION)
             {
-                Debug.WriteLine("Message: " + s);
+                Debug.WriteLine("LOG: " + s);
             }
             else
             {
-                MessageBox.Show(s);
+                Console.WriteLine("LOG: " + s);
             }
         }
     }
