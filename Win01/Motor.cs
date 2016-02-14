@@ -16,27 +16,54 @@ namespace Win01
         public string version = "v.001";
         Grid board;
         Ellipse piece;
-        Player p1, p2, playerOnTurn;
-        private enum OPONENT{HUMAN,PC};
-        private OPONENT value;
+        Ellipse[,] space;// = new Ellipse[x, y];//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
+        Player p1, p2;
+        int turn;//controlar el turno de la partida: 1->p1 y -1->p2
+        private enum OPPONENT { HUMAN, PC };
+        private OPPONENT opponent;
         Configuration confi;
+        int[,] A;
         public Motor(Configuration c)
         {
-            playerOnTurn=new Player();
-            playerOnTurn = p1;
             confi = c;
             //establecemos el tipo de juego
             if (confi.pcOption)
             {
-                value = OPONENT.PC;
+                opponent = OPPONENT.PC;
             }
             else
             {
-                value = OPONENT.HUMAN;
+                opponent = OPPONENT.HUMAN;
             }
             p1 = confi.playerList.ElementAt(0);
             p2 = confi.playerList.ElementAt(1);
+            A = new int[confi.xDim, confi.yDim];
+            fillInA();
+            turn = 1;
         }
+        /// <summary>
+        /// Llenar la matriz de ceros
+        /// </summary>
+        private void fillInA()
+        {
+            try
+            {
+                for (int i = 0; i < confi.xDim; i++)
+                {
+                    for (int j = 0; j < confi.yDim; j++)
+                    {
+                        A[i, j] = 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+        /// <summary>
+        /// En marcha
+        /// </summary>
         public void run()
         {
             buildBoard();
@@ -44,15 +71,14 @@ namespace Win01
         /// <summary>
         /// Metodo para construir el tablero del 4 en raya
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
         private void buildBoard()
         {
             try
             {
                 int x = confi.xDim;
                 int y = confi.yDim;
-                Ellipse space;//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
+                //Ellipse[,]
+                space = new Ellipse[x, y];//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
                 int diametre;//tamaño de la ficha
                 Grid t = (Grid)Application.Current.MainWindow.FindName("table");//gird donde se encuentra el tablero
                 t.Children.Clear();//limpiamos el grid
@@ -99,11 +125,11 @@ namespace Win01
                         Grid.SetRow(borderCell, i);
                         Grid.SetColumn(borderCell, j);
                         board.Children.Add(borderCell);
-                        space = new Ellipse();
-                        space.Height = diametre;
-                        space.Width = diametre;
-                        space.Fill = new SolidColorBrush(Colors.White);
-                        borderCell.Child = space;
+                        space[i - 1, j] = new Ellipse();
+                        space[i - 1, j].Height = diametre;
+                        space[i - 1, j].Width = diametre;
+                        space[i - 1, j].Fill = new SolidColorBrush(Colors.White);
+                        borderCell.Child = space[i - 1, j];
                     }
                 }
                 Border border = new Border();//borde superior para poner la ficha
@@ -120,8 +146,8 @@ namespace Win01
                 border.Child = piece;
                 piece.HorizontalAlignment = HorizontalAlignment.Left;
                 //eventos
-                board.MouseMove += new MouseEventHandler(OnMouseMoveOnBoard);
-                board.MouseLeftButtonUp += new MouseButtonEventHandler(OnMouseButtonOnBoard);
+                board.MouseMove += new MouseEventHandler(board_OnMouseMove);
+                board.MouseLeftButtonUp += new MouseButtonEventHandler(board_OnClick);
             }
             catch (Exception ex) { Debugger.WriteException(ex, this); }
         }
@@ -130,7 +156,7 @@ namespace Win01
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnMouseMoveOnBoard(object sender, MouseEventArgs e)
+        private void board_OnMouseMove(object sender, MouseEventArgs e)
         {
             try
             {
@@ -155,28 +181,60 @@ namespace Win01
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnMouseButtonOnBoard(object sender, MouseButtonEventArgs e)
+        private void board_OnClick(object sender, MouseButtonEventArgs e)
         {
             try
             {
-                int numColums = confi.yDim;
-                Grid b = (Grid)sender;
-                double boardWidth = b.ActualWidth;
-                double x = e.GetPosition(b).X;
-                double xCell = boardWidth / numColums;
-                int n = 0;
-                int colum = -1;
-                while (n < numColums)
+                int row;
+                int colum;
+                if (opponent == OPPONENT.PC && turn == -1)
                 {
-                    if (n * xCell <= x && x < (n + 1) * xCell)
-                    {
-                        colum = n;
-                        break;
-                    }
-                    n++;
+                    colum = randomColum();
+                    row = searchNextZero(colum);
                 }
-                changeTurn();
-                Debugger.Write(colum + "");
+                else
+                {
+                    Grid b = (Grid)sender;
+                    int numColums = confi.yDim;//numero de columnas                    
+                    double boardWidth = b.ActualWidth;//ancho del tablero
+                    double x = e.GetPosition(b).X;//posicion X del puntero respecto al tablero
+                    double xCell = boardWidth / numColums;//ancho de la celda
+                    colum = 0;
+                    while (colum < numColums && x >= (colum + 1) * xCell)
+                    {
+                        colum++;
+                    }
+                    row = searchNextZero(colum);
+                }
+                updateBoard(row, colum);
+
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+
+        private int randomColum()
+        {
+            Random rdm = new Random();
+            return rdm.Next(0, confi.yDim);
+        }
+        /// <summary>
+        /// Actualizar tablero y cambiar turno
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="colum"></param>
+        private void updateBoard(int row, int colum)
+        {
+            try
+            {
+                //si devuelve -1 es porque ya no queda espacio donde dejar la ficha
+                if (row != -1)
+                {
+                    updateA(row, colum);
+                    changeTurn();
+                }
             }
             catch (Exception ex)
             {
@@ -184,37 +242,82 @@ namespace Win01
             }
         }
         /// <summary>
-        /// Cambiar el jugador que esta en turno
+        /// Actualiza la matriz y deja caer la ficha. Aqui tocara controlar si se ha producido el cuatro en raya
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="colum"></param>
+        private void updateA(int row, int colum)
+        {
+            try
+            {
+                if (turn == 1)
+                {
+                    A[row, colum] = 1;
+                    space[row, colum].Fill = p1.ColorPieza;
+                }
+                else
+                {
+                    A[row, colum] = -1;
+                    space[row, colum].Fill = p2.ColorPieza;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+        /// <summary>
+        /// Cambiar el jugador que esta en turno y la pieza
         /// </summary>
         private void changeTurn()
         {
             try
             {
-                if (playerOnTurn.Equals(p1))
+                if (turn == 1)
                 {
-                    playerOnTurn = p2;                    
+                    turn = -1;
+                    piece.Fill = p2.ColorPieza;
                 }
                 else
                 {
-                    playerOnTurn = p1;
+                    turn = 1;
+                    piece.Fill = p1.ColorPieza;
                 }
-                piece.Fill = playerOnTurn.ColorPieza;
-            }
-            catch(Exception ex)
-            {
-                Debugger.WriteException(ex, this);
-            }
-        }
-
-        private void updateBoard(int col)
-        {
-            try
-            {
 
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
+            }
+        }
+
+        /// <summary>
+        /// Buscamos la posicion donde hay que dejar caer la ficha
+        /// </summary>
+        /// <param name="colum"></param>
+        /// <returns></returns>
+        private int searchNextZero(int colum)
+        {
+            try
+            {
+                int numRows = confi.xDim;
+                int row = numRows;
+                while (row >= 0 && A[row - 1, colum] != 0)
+                {
+                    row--;
+                }
+                if (row == 0)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return row - 1;
+                }
+            }//por si llegamos arriba del tablero
+            catch (Exception ex)
+            {
+                return -1;
             }
         }
     }
