@@ -66,8 +66,10 @@ namespace Win01
                 if (openFile.ShowDialog() == true)
                 {
                     players[tabControl.SelectedIndex].URIFoto = openFile.FileName;
+                    
                     //players[tabControl.SelectedIndex].RaisePropertyChanged("URIFoto");
                 }
+                tabControl.Items.Refresh();
                 //tabControl.Items.Refresh();
             }
             catch (Exception ex)

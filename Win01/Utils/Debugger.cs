@@ -24,7 +24,7 @@ namespace Win01
         {
             if (Debugger.value == ENVIORMENT.PRODUCTION)
             {
-                Debug.WriteLine(String.Format((i++) + "Error at: {}", sender.GetType()));
+                Debug.WriteLine(String.Format((i++) + ")Error at: {}", sender.GetType()));
                 Debug.Indent();
                 Debug.WriteLine(String.Format("Type: {0}", ex.GetType()));
                 Debug.WriteLine(String.Format("Message: {0}", ex.Message));
@@ -43,7 +43,7 @@ namespace Win01
         {
             if (Debugger.value == ENVIORMENT.PRODUCTION)
             {
-                Debug.WriteLine("LOG: " + s);
+                Debug.WriteLine((i++)+")LOG: " + s);
             }
             else
             {
