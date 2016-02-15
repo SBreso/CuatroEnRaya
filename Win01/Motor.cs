@@ -24,6 +24,7 @@ namespace Win01
         private OPPONENT opponent;
         Configuration confi;
         int[,] A;
+        double boardProportion;
         public Motor(Configuration c)
         {
             confi = c;
@@ -79,7 +80,7 @@ namespace Win01
                 int x = confi.xDim;
                 int y = confi.yDim;
                 //Ellipse[,]
-                space = new Ellipse[x, y];//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
+                space = new Ellipse[x, y];//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????                
                 int diametre;//tamaño de la ficha
                 Grid table = (Grid)Application.Current.MainWindow.FindName("table");//gird donde se encuentra el tablero
                 table.SizeChanged += new SizeChangedEventHandler(table_OnResize);
@@ -102,6 +103,7 @@ namespace Win01
                     board.Height = yCell * (x);
                     diametre = (int)xCell - 5;//le quito un poco para que parezca un tablero
                 }
+
                 //board.Background = new SolidColorBrush(Colors.Red);//fondo del tablero
                 //definimos las filas y columnas
                 ColumnDefinition col;
@@ -118,6 +120,7 @@ namespace Win01
                 }
                 //insertamos los espacios en cada celda dentro de un border
                 Border borderCell;
+
                 for (int i = 1; i < board.RowDefinitions.Count; i++)//empieza en el 1 xq la primera fila es para la ficha
                 {
                     for (int j = 0; j < board.ColumnDefinitions.Count; j++)
@@ -128,12 +131,13 @@ namespace Win01
                         Grid.SetColumn(borderCell, j);
                         board.Children.Add(borderCell);
                         space[i - 1, j] = new Ellipse();
-                        space[i - 1, j].Height = diametre;
-                        space[i - 1, j].Width = diametre;
+                        //space[i - 1, j].Height = diametre;
+                        //space[i - 1, j].Width = diametre;
                         space[i - 1, j].Fill = new SolidColorBrush(Colors.White);
                         borderCell.Child = space[i - 1, j];
                     }
                 }
+                resizeSpace(diametre);
                 Border borderPiece = new Border();//borde superior para poner la ficha
                 borderPiece.Background = new SolidColorBrush(Colors.White);
                 board.Children.Add(borderPiece);
@@ -142,16 +146,47 @@ namespace Win01
                 Grid.SetColumnSpan(borderPiece, y);//colspan del num de columnas
                 table.Children.Add(board);
                 piece = new Ellipse();
-                piece.Height = diametre + 5;//le añodo lo que le quite
-                piece.Width = diametre + 5;
+                resizePiece(diametre + 5);
+                //piece.Height = diametre + 5;//le añodo lo que le quite
+                //piece.Width = diametre + 5;
                 piece.Fill = p1.ColorPieza;
                 borderPiece.Child = piece;
                 piece.HorizontalAlignment = HorizontalAlignment.Left;
+                boardProportion = board.Height / board.Width;
                 //eventos
                 board.MouseMove += new MouseEventHandler(board_OnMouseMove);
                 board.MouseLeftButtonUp += new MouseButtonEventHandler(board_OnClick);
             }
             catch (Exception ex) { Debugger.WriteException(ex, this); }
+        }
+
+        private void resizeSpace(double diametre)
+        {
+            try
+            {
+                foreach (Ellipse s in space)
+                {
+                    s.Height = diametre;
+                    s.Width = diametre;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+
+        private void resizePiece(double diametre)
+        {
+            try
+            {
+                piece.Height = diametre;
+                piece.Width = diametre;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
         }
         /// <summary>
         /// Manejador del evento resize del contenedor del tablero
@@ -163,8 +198,21 @@ namespace Win01
             try//redimensionar los espacios y la ficha
             {                //no se mantiene cuadrado
                 Grid obj = (Grid)sender;
-                board.Height = obj.ActualHeight;
-                board.Width = obj.ActualWidth;
+                Size newTableSize = e.NewSize;
+                if (newTableSize.Height > newTableSize.Width)
+                {
+                    board.Width = newTableSize.Width;
+                    board.Height = boardProportion * board.Width;
+                }
+                else
+                {
+                    board.Height = newTableSize.Height;
+                    board.Width = board.Height / boardProportion;
+                }
+                resizeSpace(board.Width / confi.yDim-5);
+                resizePiece(board.Width / confi.yDim);
+                //board.Height = obj.ActualHeight;
+                //board.Width = obj.ActualWidth;
                 //double actualH = obj.ActualHeight;
                 //double actualW = obj.ActualWidth;
                 //resizeBoard(actualH, actualW);
@@ -236,7 +284,7 @@ namespace Win01
                             row = searchNextZero(colum);
                         }
                         updateBoard(row, colum);
-                        changeTurn();                        
+                        changeTurn();
                     }
                 }
                 else//con un amigo
@@ -255,7 +303,7 @@ namespace Win01
                     {
                         updateBoard(row, colum);
                         changeTurn();
-                    }                    
+                    }
                 }
             }
             catch (Exception ex)
@@ -270,40 +318,11 @@ namespace Win01
             return rdm.Next(0, confi.yDim);
         }
         /// <summary>
-        /// Actualizar tablero y cambiar turno
+        /// Actualizar tablero, matriz y cambiar turno
         /// </summary>
         /// <param name="row"></param>
         /// <param name="colum"></param>
         private void updateBoard(int row, int colum)
-        {
-            try
-            {
-                //si devuelve -1 es porque ya no queda espacio donde dejar la ficha
-                if (row != -1)
-                {
-                    if (turn == 1)
-                    {
-                        A[row, colum] = 1;
-                        space[row, colum].Fill = p1.ColorPieza;
-                    }
-                    else
-                    {
-                        A[row, colum] = -1;
-                        space[row, colum].Fill = p2.ColorPieza;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debugger.WriteException(ex, this);
-            }
-        }
-        /// <summary>
-        /// Actualiza la matriz y deja caer la ficha. Aqui tocara controlar si se ha producido el cuatro en raya
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="colum"></param>
-        private void updateA(int row, int colum)
         {
             try
             {
@@ -317,6 +336,7 @@ namespace Win01
                     A[row, colum] = -1;
                     space[row, colum].Fill = p2.ColorPieza;
                 }
+
             }
             catch (Exception ex)
             {
