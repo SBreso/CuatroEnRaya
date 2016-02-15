@@ -20,8 +20,8 @@ namespace Win01
             iconList = il;
             colorsList = cl;
             pcOption = true;
-            xDim = 6;
-            yDim = 5;
+            xDim = 4;
+            yDim = 4;
             time = 10;
             playerList = new List<Player>();
         }

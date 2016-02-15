@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +14,7 @@ namespace Win01
 {
     class Motor
     {
-        public string version = "v.001";
+        public string version = "v.002";
         Grid board;
         Ellipse piece;
         Ellipse[,] space;// = new Ellipse[x, y];//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
@@ -80,11 +81,12 @@ namespace Win01
                 //Ellipse[,]
                 space = new Ellipse[x, y];//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
                 int diametre;//tamaño de la ficha
-                Grid t = (Grid)Application.Current.MainWindow.FindName("table");//gird donde se encuentra el tablero
-                t.Children.Clear();//limpiamos el grid
+                Grid table = (Grid)Application.Current.MainWindow.FindName("table");//gird donde se encuentra el tablero
+                table.SizeChanged += new SizeChangedEventHandler(table_OnResize);
+                table.Children.Clear();//limpiamos el grid
                 board = new Grid();//creamos un tablero
-                board.Height = t.ActualHeight;
-                board.Width = t.ActualWidth;
+                board.Height = table.ActualHeight;
+                board.Width = table.ActualWidth;
                 Double yCell = board.Height / (x + 1);//tamaño de alto de la fila, ponemos una fila de mas para mover la ficha
                 Double xCell = board.Width / y;//tamaño de ancho de la columna
                 //comparamos para quedarnos con el mas pequeño, asi cabe en el inicio
@@ -98,7 +100,7 @@ namespace Win01
                 {
                     board.Width = yCell * y;
                     board.Height = yCell * (x);
-                    diametre = (int)xCell - 5;
+                    diametre = (int)xCell - 5;//le quito un poco para que parezca un tablero
                 }
                 //board.Background = new SolidColorBrush(Colors.Red);//fondo del tablero
                 //definimos las filas y columnas
@@ -114,9 +116,9 @@ namespace Win01
                     row = new RowDefinition();
                     board.RowDefinitions.Add(row);
                 }
-                //insertamos los espacios en cada celda
+                //insertamos los espacios en cada celda dentro de un border
                 Border borderCell;
-                for (int i = 1; i < board.RowDefinitions.Count; i++)
+                for (int i = 1; i < board.RowDefinitions.Count; i++)//empieza en el 1 xq la primera fila es para la ficha
                 {
                     for (int j = 0; j < board.ColumnDefinitions.Count; j++)
                     {
@@ -132,24 +134,46 @@ namespace Win01
                         borderCell.Child = space[i - 1, j];
                     }
                 }
-                Border border = new Border();//borde superior para poner la ficha
-                border.Background = new SolidColorBrush(Colors.White);
-                board.Children.Add(border);
-                Grid.SetColumn(border, 0);
-                Grid.SetRow(border, 0);
-                Grid.SetColumnSpan(border, y);
-                t.Children.Add(board);
+                Border borderPiece = new Border();//borde superior para poner la ficha
+                borderPiece.Background = new SolidColorBrush(Colors.White);
+                board.Children.Add(borderPiece);
+                Grid.SetColumn(borderPiece, 0);
+                Grid.SetRow(borderPiece, 0);
+                Grid.SetColumnSpan(borderPiece, y);//colspan del num de columnas
+                table.Children.Add(board);
                 piece = new Ellipse();
-                piece.Height = diametre + 5;
+                piece.Height = diametre + 5;//le añodo lo que le quite
                 piece.Width = diametre + 5;
                 piece.Fill = p1.ColorPieza;
-                border.Child = piece;
+                borderPiece.Child = piece;
                 piece.HorizontalAlignment = HorizontalAlignment.Left;
                 //eventos
                 board.MouseMove += new MouseEventHandler(board_OnMouseMove);
                 board.MouseLeftButtonUp += new MouseButtonEventHandler(board_OnClick);
             }
             catch (Exception ex) { Debugger.WriteException(ex, this); }
+        }
+        /// <summary>
+        /// Manejador del evento resize del contenedor del tablero
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void table_OnResize(object sender, SizeChangedEventArgs e)
+        {
+            try//redimensionar los espacios y la ficha
+            {                //no se mantiene cuadrado
+                Grid obj = (Grid)sender;
+                board.Height = obj.ActualHeight;
+                board.Width = obj.ActualWidth;
+                //double actualH = obj.ActualHeight;
+                //double actualW = obj.ActualWidth;
+                //resizeBoard(actualH, actualW);
+                //Console.WriteLine(obj.ActualHeight+"\t"+obj.ActualWidth);
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
         }
         /// <summary>
         /// Manejador del movimiento de la ficha
@@ -187,14 +211,36 @@ namespace Win01
             {
                 int row;
                 int colum;
-                if (opponent == OPPONENT.PC && turn == -1)
+                Grid b = (Grid)sender;
+                if (opponent == OPPONENT.PC)//contra la maquina
                 {
-                    colum = randomColum();
-                    row = searchNextZero(colum);
+                    int numColums = confi.yDim;//numero de columnas                    
+                    double boardWidth = b.ActualWidth;//ancho del tablero
+                    double x = e.GetPosition(b).X;//posicion X del puntero respecto al tablero
+                    double xCell = boardWidth / numColums;//ancho de la celda
+                    colum = 0;
+                    while (colum < numColums && x >= (colum + 1) * xCell)
+                    {
+                        colum++;
+                    }
+                    row = searchNextZero(colum);//si devuelve -1 la columna esta llena y toca elegir nueva columna
+                    if (row != -1)//controlamos que quede espacio, si no, no camnbiamos de turno
+                    {
+                        updateBoard(row, colum);
+                        changeTurn();
+                        colum = randomColum();
+                        row = searchNextZero(colum);
+                        while (row == -1)
+                        {
+                            colum = randomColum();
+                            row = searchNextZero(colum);
+                        }
+                        updateBoard(row, colum);
+                        changeTurn();                        
+                    }
                 }
-                else
+                else//con un amigo
                 {
-                    Grid b = (Grid)sender;
                     int numColums = confi.yDim;//numero de columnas                    
                     double boardWidth = b.ActualWidth;//ancho del tablero
                     double x = e.GetPosition(b).X;//posicion X del puntero respecto al tablero
@@ -205,9 +251,12 @@ namespace Win01
                         colum++;
                     }
                     row = searchNextZero(colum);
+                    if (row != -1)//controlamos que quede espacio, si no, no camnbiamos de turno
+                    {
+                        updateBoard(row, colum);
+                        changeTurn();
+                    }                    
                 }
-                updateBoard(row, colum);
-
             }
             catch (Exception ex)
             {
@@ -232,8 +281,16 @@ namespace Win01
                 //si devuelve -1 es porque ya no queda espacio donde dejar la ficha
                 if (row != -1)
                 {
-                    updateA(row, colum);
-                    changeTurn();
+                    if (turn == 1)
+                    {
+                        A[row, colum] = 1;
+                        space[row, colum].Fill = p1.ColorPieza;
+                    }
+                    else
+                    {
+                        A[row, colum] = -1;
+                        space[row, colum].Fill = p2.ColorPieza;
+                    }
                 }
             }
             catch (Exception ex)
@@ -301,22 +358,23 @@ namespace Win01
             try
             {
                 int numRows = confi.xDim;
-                int row = numRows;
-                while (row >= 0 && A[row - 1, colum] != 0)
+                int row = numRows - 1;
+                while (row >= 0 && A[row, colum] != 0)
                 {
                     row--;
                 }
-                if (row == 0)
+                if (row == -1)//por si llegamos arriba del tablero
                 {
                     return -1;
                 }
                 else
                 {
-                    return row - 1;
+                    return row;
                 }
-            }//por si llegamos arriba del tablero
+            }
             catch (Exception ex)
             {
+                Debugger.WriteException(ex, this);
                 return -1;
             }
         }

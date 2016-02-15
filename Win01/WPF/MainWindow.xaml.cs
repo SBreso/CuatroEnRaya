@@ -223,11 +223,6 @@ namespace Win01
        
         #endregion
 
-        //private void MenuItem_Click_1(object sender, RoutedEventArgs e)
-        //{
-        //    buildBoard(4,4);
-        //}
-
        
     }
     //Comandos    
