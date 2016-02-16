@@ -159,7 +159,10 @@ namespace Win01
             }
             catch (Exception ex) { Debugger.WriteException(ex, this); }
         }
-
+        /// <summary>
+        /// Asignar tamaño a los espacios del tablero
+        /// </summary>
+        /// <param name="diametre"></param>
         private void resizeSpace(double diametre)
         {
             try
@@ -175,7 +178,10 @@ namespace Win01
                 Debugger.WriteException(ex, this);
             }
         }
-
+        /// <summary>
+        /// Asignar tamaño a la ficha del jugador
+        /// </summary>
+        /// <param name="diametre"></param>
         private void resizePiece(double diametre)
         {
             try
@@ -195,11 +201,10 @@ namespace Win01
         /// <param name="e"></param>
         private void table_OnResize(object sender, SizeChangedEventArgs e)
         {
-            try//redimensionar los espacios y la ficha
-            {                //no se mantiene cuadrado
-                Grid obj = (Grid)sender;
+            try
+            {
                 Size newTableSize = e.NewSize;
-                if (newTableSize.Height > newTableSize.Width)
+                if (newTableSize.Height > boardProportion * newTableSize.Width)
                 {
                     board.Width = newTableSize.Width;
                     board.Height = boardProportion * board.Width;
@@ -209,14 +214,8 @@ namespace Win01
                     board.Height = newTableSize.Height;
                     board.Width = board.Height / boardProportion;
                 }
-                resizeSpace(board.Width / confi.yDim-5);
+                resizeSpace(board.Width / confi.yDim - 5);
                 resizePiece(board.Width / confi.yDim);
-                //board.Height = obj.ActualHeight;
-                //board.Width = obj.ActualWidth;
-                //double actualH = obj.ActualHeight;
-                //double actualW = obj.ActualWidth;
-                //resizeBoard(actualH, actualW);
-                //Console.WriteLine(obj.ActualHeight+"\t"+obj.ActualWidth);
             }
             catch (Exception ex)
             {
@@ -311,7 +310,10 @@ namespace Win01
                 Debugger.WriteException(ex, this);
             }
         }
-
+        /// <summary>
+        /// debuelve un numero entero entre 0 y el numero de columanas. Para la maquina
+        /// </summary>
+        /// <returns></returns>
         private int randomColum()
         {
             Random rdm = new Random();
@@ -329,6 +331,9 @@ namespace Win01
                 if (turn == 1)
                 {
                     A[row, colum] = 1;
+                    int des;
+                    bool b = checkHorizontalArray(row, colum, out des);
+                    Console.WriteLine(b + " " + des);
                     space[row, colum].Fill = p1.ColorPieza;
                 }
                 else
@@ -367,7 +372,6 @@ namespace Win01
                 Debugger.WriteException(ex, this);
             }
         }
-
         /// <summary>
         /// Buscamos la posicion donde hay que dejar caer la ficha
         /// </summary>
@@ -396,6 +400,132 @@ namespace Win01
             {
                 Debugger.WriteException(ex, this);
                 return -1;
+            }
+        }
+        /// <summary>
+        /// Checkea la matriz en busca de un cuatro en raya
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        private void checkA(int x, int y)
+        {
+            try
+            {
+                //checkeqmos el vertical
+                if (x + 4 > confi.xDim && checkVerticalArray(x, y))
+                {
+                    //lanzar evento partida ganada
+                }
+                int des;
+                if (checkHorizontalArray(x, y, out des))
+                {
+                    //lanzar evento partida ganada con el desplazamiento
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+        /// <summary>
+        /// Calcula el array vertical y devuelve si suma 4, o no
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private bool checkVerticalArray(int x, int y)
+        {
+            try
+            {
+                int[] v = new int[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    v[i] = A[x + i, y];
+                }
+                return sumArray(v) == 4;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                return false;
+            }
+        }
+        /// <summary>
+        /// Calcula los posibles vectores horizontales y si suman 4. Si da que si, devuelve el desplazamiento respecto a la posicion dada
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="des"></param>
+        /// <returns></returns>
+        private bool checkHorizontalArray(int x, int y, out int des)//des es el desplazamiento respecto al origen
+        {
+            try
+            {
+                int[] v = new int[4];
+                //int[,] B = new int[4, 4];//en cada fila guardare los posibles vectores, si no se puede formar se generara en cero
+                //for (int k = 3; k >= 0; k--)
+                int k = 3;
+                while (k >= 0)//puedo construir el vector horizontal
+                {
+                    if (y - k >= 0 && y + (3 - k) < confi.yDim)
+                    {
+                        for (int j = 0; j < 4; j++)//lo construyo
+                        {
+                            v[j] = A[x, y - k + j];
+                        }
+                        if (sumArray(v) == 4)//suma 4? paro de hacer cosas
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            k--;
+                        }
+                    }
+                    else//no suma 4...sigo probando
+                    {
+                        k--;
+                    }
+                }
+                if (k < 0)
+                {
+                    des = -1;
+                    return false;
+                }
+                else
+                {
+                    des = k;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                des = -1;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Metodo para sumar los elementos de un array
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        private int sumArray(int[] v)
+        {
+            try
+            {
+                int acc = 0;
+                foreach (int a in v)
+                {
+                    acc += a;
+                }
+                return acc;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                return 0;
             }
         }
     }
