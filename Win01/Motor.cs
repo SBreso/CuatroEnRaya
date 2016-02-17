@@ -331,14 +331,13 @@ namespace Win01
                 if (turn == 1)
                 {
                     A[row, colum] = 1;
-                    int des;
-                    bool b = checkHorizontalArray(row, colum, out des);
-                    Console.WriteLine(b + " " + des);
+                    checkA(row,colum);
                     space[row, colum].Fill = p1.ColorPieza;
                 }
                 else
                 {
                     A[row, colum] = -1;
+                    checkA(row, colum);
                     space[row, colum].Fill = p2.ColorPieza;
                 }
 
@@ -411,15 +410,29 @@ namespace Win01
         {
             try
             {
-                //checkeqmos el vertical
-                if (x + 4 > confi.xDim && checkVerticalArray(x, y))
-                {
-                    //lanzar evento partida ganada
-                }
                 int des;
-                if (checkHorizontalArray(x, y, out des))
+                //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
+                if (x + 4 <= confi.xDim && checkVerticalArray(x, y, out des)==4)
+                {
+                    //lanzar evento partida ganada    
+                    Console.WriteLine("1");
+                } 
+                //esta hay que hacerla 'siempre'               
+                if (checkHorizontalArray(x, y, out des)==4)
                 {
                     //lanzar evento partida ganada con el desplazamiento
+                    Console.WriteLine("2");
+                }              
+                //no hace falta que haga la comprobacion si esta en las esquinas
+                if (!(x < 3 && y <= 2 - x) && !(x - confi.xDim + 3 < 3 && y > confi.xDim + confi.yDim - 5 - x) && checkNoMainDiagonal(x, y, out des)==4)
+                {
+                    //lanzar evento
+                    Console.WriteLine("3");
+                }
+                //controlar que no entre en las esquinas
+                if (checkMainDiagonal(x, y, out des) == 4)
+                {
+                    Console.WriteLine("4");
                 }
 
             }
@@ -434,23 +447,35 @@ namespace Win01
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        private bool checkVerticalArray(int x, int y)
+        private int checkVerticalArray(int x, int y, out int des)
         {
             try
             {
-                int[] v = new int[4];
-                for (int i = 0; i < 4; i++)
+                int sum = -1;
+                int i=1;
+                while (i < 4 && A[x,y]==A[x+i,y])
                 {
-                    v[i] = A[x + i, y];
+                    i++;
                 }
-                return sumArray(v) == 4;
+                if (i == 4)
+                {
+                    sum = 4;
+                }
+                des = x;
+                return sum;
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
-                return false;
+                des = -1;
+                return 0;
             }
         }
+
+        /*
+         * se puede optimizar la comprobacion, haciendo calculos intermedios
+         * para que no siga haciendolo en caso de que se produzcan ciertas condicionesç
+         */
         /// <summary>
         /// Calcula los posibles vectores horizontales y si suman 4. Si da que si, devuelve el desplazamiento respecto a la posicion dada
         /// </summary>
@@ -458,31 +483,51 @@ namespace Win01
         /// <param name="y"></param>
         /// <param name="des"></param>
         /// <returns></returns>
-        private bool checkHorizontalArray(int x, int y, out int des)//des es el desplazamiento respecto al origen
+        private int checkHorizontalArray(int x, int y, out int des)//des es el desplazamiento respecto al origen
         {
             try
             {
                 int[] v = new int[4];
+                int sum = -1;
+                int sumTem = 0;
                 //int[,] B = new int[4, 4];//en cada fila guardare los posibles vectores, si no se puede formar se generara en cero
                 //for (int k = 3; k >= 0; k--)
                 int k = 3;
-                while (k >= 0)//puedo construir el vector horizontal
+                while (k >= 0)
                 {
-                    if (y - k >= 0 && y + (3 - k) < confi.yDim)
+                    if (y - k >= 0 && y + (3 - k) < confi.yDim)//puedo construir el vector horizontal
                     {
-                        for (int j = 0; j < 4; j++)//lo construyo
+                        //no se, no se
+                        int j = 1;
+                        while (j < 4 && A[x, y] == A[x, y - k + j])
                         {
-                            v[j] = A[x, y - k + j];
+                            j++;
                         }
-                        if (sumArray(v) == 4)//suma 4? paro de hacer cosas
-                        {
-                            break;
-                        }
-                        else
+                        //comprobacion si todos son iguales, o no
+                        if (j < 4)//son distinto, paso al siguiente vector
                         {
                             k--;
                         }
-                    }
+                        else//son iguales, ya he encontrado un 4 en raya
+                        {
+                            des=k;
+                            return 4;
+                        }
+                        //sum = j;
+                        //for (int j = 0; j < 4; j++)//lo construyo
+                        //{
+                        //    v[j] = A[x, y - k + j];
+                        //}
+                        //sum = Math.Abs(sumArray(v));
+                        //if ( sum== 4)//suma 4? paro de hacer cosas
+                        //{
+                        //    break;
+                        //}
+                        //else
+                        //{
+                        //    k--;
+                        //}
+                    }//no puedo construirlo, paso a la siguiente posibilidad
                     else//no suma 4...sigo probando
                     {
                         k--;
@@ -491,19 +536,131 @@ namespace Win01
                 if (k < 0)
                 {
                     des = -1;
-                    return false;
+                    return sum;
                 }
                 else
                 {
                     des = k;
-                    return true;
+                    return sum;
                 }
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
                 des = -1;
-                return false;
+                return -1;
+            }
+        }
+        /// <summary>
+        /// Ckequear las posibles diagonales no principales
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="des"></param>
+        /// <returns></returns>
+        private int checkNoMainDiagonal(int x, int y, out int des)
+        {
+            try
+            {
+                int[] v = new int[4];
+                int sum = -1;
+                //controlar que x e y pueden formar vector en la llamada
+                int k = 3;
+                while (k >= 0)
+                {
+                    if (x + k < confi.xDim && y - k >=0 && x - (3 - k) >= 0 && y+(3-k)<confi.yDim)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            v[j] = A[x + k - j, y - k + j];
+                        }
+                        sum = Math.Abs(sumArray(v));
+                        if (sum == 4)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            k--;
+                        }
+                    }
+                    else
+                    {
+                        k--;
+                    }
+                }
+                if (k < 0)
+                {
+                    des = -1;
+                    return sum;
+                }
+                else
+                {
+                    des = k;
+                    return sum;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                des = -1;
+                return -1;
+            }
+        }
+        /// <summary>
+        /// Ckequear las posibles diagonales principales
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="des"></param>
+        /// <returns></returns>
+        private int checkMainDiagonal(int x, int y, out int des)
+        {
+            try
+            {
+                int[] v = new int[4];
+                int sum = -1;
+                //controlar que x e y pueden formar vector en la llamada
+                int k = 3;
+                while (k >= 0)
+                {
+                    if (x + k < confi.xDim && y + k < confi.yDim && y - (3 - k) >= 0 && x - (3 - k) >= 0)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            v[j] = A[x + k - j, y + k - j];
+                        }
+                        sum = Math.Abs(sumArray(v));
+                        if (sum== 4)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            k--;
+                        }
+                    }
+                    else
+                    {
+                        k--;
+                    }
+                }
+                if (k < 0)
+                {
+                    des = -1;
+                    return sum;
+                }
+                else
+                {
+                    des = k;
+                    return sum;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                des = -1;
+                return -1;
             }
         }
         /// <summary>
