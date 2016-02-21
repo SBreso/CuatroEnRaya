@@ -420,13 +420,13 @@ namespace Win01
             {
                 int des;//representa el desplazamiento respecto a la posicion original, para saber exactamento donde se encuentran las 4 fichas
                 //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
-                if (x + 4 <= confi.xDim && checkVerticalArray(x, y, out des))
+                if (x + 4 <= confi.xDim && checkVertical(x, y, out des))
                 {
                     //lanzar evento partida ganada    
                     Console.WriteLine("1\t"+des);
                 } 
                 //esta hay que hacerla 'siempre'               
-                if (checkHorizontalArray(x, y, out des))
+                if (checkHorizontal(x, y, out des))
                 {
                     //lanzar evento partida ganada con el desplazamiento
                     Console.WriteLine("2\t" + des);
@@ -450,12 +450,12 @@ namespace Win01
             }
         }
         /// <summary>
-        /// Calcula el array vertical y devuelve si suma 4, o no
+        /// Devuelve true si se ha producido un 4 en raya vertical
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        private bool checkVerticalArray(int x, int y, out int des)
+        private bool checkVertical(int x, int y, out int des)
         {
             try
             {
@@ -475,13 +475,13 @@ namespace Win01
             }
         }
         /// <summary>
-        /// Calcula los posibles vectores horizontales y si suman 4. Si da que si, devuelve el desplazamiento respecto a la posicion dada
+        /// Devuelve true si se ha producido un 4 en raya horizontal
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="des"></param>
         /// <returns></returns>
-        private bool checkHorizontalArray(int x, int y, out int des)//des es el desplazamiento respecto al origen
+        private bool checkHorizontal(int x, int y, out int des)//des es el desplazamiento respecto al origen
         {
             try
             {
@@ -500,42 +500,13 @@ namespace Win01
                  *si k=3 comprobacion hacia la derecha de un elemento
                  *si k=4 ha habido un cuatro en raya
                  */
-                int n = 1;
-                switch (k)
+                if (k == 4)
                 {
-                    case 1:
-                        {
-                            while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
-                            {
-                                n++;
-                            }
-                            return n == 4;
-                        }
-                    case 2:
-                        {
-                            while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
-                            {
-                                n++;
-                            }
-                            return n == 3;
-                        }
-                    case 3:
-                        {
-                            while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
-                            {
-                                n++;
-                            }
-                            return n == 2;
-                        }
-                    case 4:
-                        {
-                            return true;
-                        }
-                    default:
-                        {
-                            des = -1;
-                            return  false;
-                        }
+                    return true;
+                }
+                else
+                {
+                    return checkHorizontalRight(x, y, k);
                 }
             }
             catch (Exception ex)
@@ -545,8 +516,17 @@ namespace Win01
                 return false;
             }          
         }
+        private bool checkHorizontalRight(int x, int y, int k)
+        {
+            int n=1;
+            while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
+            {
+                n++;
+            }
+            return n == 4;
+        }
         /// <summary>
-        /// Ckequear las posibles diagonales no principales
+        /// Devuelve true si se ha producido un 4 en raya en la diagonal no principal
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -582,7 +562,7 @@ namespace Win01
                         return n == 4;
         }
         /// <summary>
-        /// Ckequear las posibles diagonales principales
+        /// Devuelve true si se ha producido un 4 en raya en la diagonal principal
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
