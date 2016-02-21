@@ -415,24 +415,24 @@ namespace Win01
                 if (x + 4 <= confi.xDim && checkVerticalArray(x, y, out des)==4)
                 {
                     //lanzar evento partida ganada    
-                    Console.WriteLine("1");
+                    Console.WriteLine("1"+des);
                 } 
                 //esta hay que hacerla 'siempre'               
                 if (checkHorizontalArray(x, y, out des)==4)
                 {
                     //lanzar evento partida ganada con el desplazamiento
-                    Console.WriteLine("2");
+                    Console.WriteLine("2"+des);
                 }              
                 //no hace falta que haga la comprobacion si esta en las esquinas
                 if (!(x < 3 && y <= 2 - x) && !(x - confi.xDim + 3 < 3 && y > confi.xDim + confi.yDim - 5 - x) && checkNoMainDiagonal(x, y, out des)==4)
                 {
                     //lanzar evento
-                    Console.WriteLine("3");
+                    Console.WriteLine("3"+des);
                 }
                 //controlar que no entre en las esquinas
                 if (checkMainDiagonal(x, y, out des) == 4)
                 {
-                    Console.WriteLine("4");
+                    Console.WriteLine("4"+des);
                 }
 
             }
@@ -451,18 +451,13 @@ namespace Win01
         {
             try
             {
-                int sum = -1;
                 int i=1;
                 while (i < 4 && A[x,y]==A[x+i,y])
                 {
                     i++;
-                }
-                if (i == 4)
-                {
-                    sum = 4;
-                }
-                des = x;
-                return sum;
+                }               
+                des = i-1;
+                return i;
             }
             catch (Exception ex)
             {
@@ -474,7 +469,7 @@ namespace Win01
 
         /*
          * se puede optimizar la comprobacion, haciendo calculos intermedios
-         * para que no siga haciendolo en caso de que se produzcan ciertas condicionesç
+         * para que no siga haciendolo en caso de que se produzcan ciertas condiciones
          */
         /// <summary>
         /// Calcula los posibles vectores horizontales y si suman 4. Si da que si, devuelve el desplazamiento respecto a la posicion dada
@@ -487,6 +482,69 @@ namespace Win01
         {
             try
             {
+                int k = 1;
+                //compruevo que existe el elemento A[x,y-k]
+                //compruevo que no me voy mas alla del cuatro en raya
+                //compruevo que los elementos coinciden
+                while (y - k >= 0 && k < 4 && A[x, y] == A[x, y - k])
+                {
+                    k++;
+                }
+                /*tres posibles resultados h=1,2,3
+                *si k=1 tengo que hacer la comprobacion hacia la derecha hasta maximo el tercer elemento
+                 *si k=2 comprobacion hacia la derecha maximo 2
+                 *si k=3 comprobacion hacia la derecha de un elemento
+                 *si k=4 ha habido un cuatro en raya
+                 */
+                int n = 1;
+                switch (k)
+                {
+                    case 1:
+                        {
+                            while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
+                            {
+                                n++;
+                            }
+                            break;
+                        }
+                    case 2:
+                        {
+                            while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
+                            {
+                                n++;
+                            }
+                            break;
+                        }
+                    case 3:
+                        {
+                            while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
+                            {
+                                n++;
+                            }
+                            break;
+                        }
+                    case 4:
+                        {
+                            n = 4;
+                            break;
+                        }
+                    default:
+                        {
+                            n = -1;
+                            break;
+                        }
+                }
+                des = k;
+                return n;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                des = -1;
+                return -1;
+            }
+
+                /*
                 int[] v = new int[4];
                 int sum = -1;
                 int sumTem = 0;
@@ -542,14 +600,8 @@ namespace Win01
                 {
                     des = k;
                     return sum;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debugger.WriteException(ex, this);
-                des = -1;
-                return -1;
-            }
+                }*/
+          
         }
         /// <summary>
         /// Ckequear las posibles diagonales no principales
