@@ -412,13 +412,13 @@ namespace Win01
             {
                 int des;
                 //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
-                if (x + 4 <= confi.xDim && checkVerticalArray(x, y, out des)==4)
+                if (x + 4 <= confi.xDim && checkVerticalArray(x, y, out des))
                 {
                     //lanzar evento partida ganada    
                     Console.WriteLine("1"+des);
                 } 
                 //esta hay que hacerla 'siempre'               
-                if (checkHorizontalArray(x, y, out des)==4)
+                if (checkHorizontalArray(x, y, out des))
                 {
                     //lanzar evento partida ganada con el desplazamiento
                     Console.WriteLine("2"+des);
@@ -447,7 +447,7 @@ namespace Win01
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        private int checkVerticalArray(int x, int y, out int des)
+        private bool checkVerticalArray(int x, int y, out int des)
         {
             try
             {
@@ -457,13 +457,13 @@ namespace Win01
                     i++;
                 }               
                 des = i-1;
-                return i;
+                return i==4;
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
                 des = -1;
-                return 0;
+                return false;
             }
         }
 
@@ -478,7 +478,7 @@ namespace Win01
         /// <param name="y"></param>
         /// <param name="des"></param>
         /// <returns></returns>
-        private int checkHorizontalArray(int x, int y, out int des)//des es el desplazamiento respecto al origen
+        private bool checkHorizontalArray(int x, int y, out int des)//des es el desplazamiento respecto al origen
         {
             try
             {
@@ -490,6 +490,7 @@ namespace Win01
                 {
                     k++;
                 }
+                des = k;
                 /*tres posibles resultados h=1,2,3
                 *si k=1 tengo que hacer la comprobacion hacia la derecha hasta maximo el tercer elemento
                  *si k=2 comprobacion hacia la derecha maximo 2
@@ -505,7 +506,7 @@ namespace Win01
                             {
                                 n++;
                             }
-                            break;
+                            return n == 4;
                         }
                     case 2:
                         {
@@ -513,7 +514,7 @@ namespace Win01
                             {
                                 n++;
                             }
-                            break;
+                            return n == 3;
                         }
                     case 3:
                         {
@@ -521,87 +522,25 @@ namespace Win01
                             {
                                 n++;
                             }
-                            break;
+                            return n == 2;
                         }
                     case 4:
                         {
-                            n = 4;
-                            break;
+                            return true;
                         }
                     default:
                         {
-                            n = -1;
-                            break;
+                            des = -1;
+                            return  false;
                         }
                 }
-                des = k;
-                return n;
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
                 des = -1;
-                return -1;
-            }
-
-                /*
-                int[] v = new int[4];
-                int sum = -1;
-                int sumTem = 0;
-                //int[,] B = new int[4, 4];//en cada fila guardare los posibles vectores, si no se puede formar se generara en cero
-                //for (int k = 3; k >= 0; k--)
-                int k = 3;
-                while (k >= 0)
-                {
-                    if (y - k >= 0 && y + (3 - k) < confi.yDim)//puedo construir el vector horizontal
-                    {
-                        //no se, no se
-                        int j = 1;
-                        while (j < 4 && A[x, y] == A[x, y - k + j])
-                        {
-                            j++;
-                        }
-                        //comprobacion si todos son iguales, o no
-                        if (j < 4)//son distinto, paso al siguiente vector
-                        {
-                            k--;
-                        }
-                        else//son iguales, ya he encontrado un 4 en raya
-                        {
-                            des=k;
-                            return 4;
-                        }
-                        //sum = j;
-                        //for (int j = 0; j < 4; j++)//lo construyo
-                        //{
-                        //    v[j] = A[x, y - k + j];
-                        //}
-                        //sum = Math.Abs(sumArray(v));
-                        //if ( sum== 4)//suma 4? paro de hacer cosas
-                        //{
-                        //    break;
-                        //}
-                        //else
-                        //{
-                        //    k--;
-                        //}
-                    }//no puedo construirlo, paso a la siguiente posibilidad
-                    else//no suma 4...sigo probando
-                    {
-                        k--;
-                    }
-                }
-                if (k < 0)
-                {
-                    des = -1;
-                    return sum;
-                }
-                else
-                {
-                    des = k;
-                    return sum;
-                }*/
-          
+                return false;
+            }          
         }
         /// <summary>
         /// Ckequear las posibles diagonales no principales
@@ -610,53 +549,40 @@ namespace Win01
         /// <param name="y"></param>
         /// <param name="des"></param>
         /// <returns></returns>
-        private int checkNoMainDiagonal(int x, int y, out int des)
+        private bool checkNoMainDiagonal(int x, int y, out int des)
         {
             try
             {
-                int[] v = new int[4];
-                int sum = -1;
-                //controlar que x e y pueden formar vector en la llamada
-                int k = 3;
-                while (k >= 0)
-                {
-                    if (x + k < confi.xDim && y - k >=0 && x - (3 - k) >= 0 && y+(3-k)<confi.yDim)
-                    {
-                        for (int j = 0; j < 4; j++)
-                        {
-                            v[j] = A[x + k - j, y - k + j];
-                        }
-                        sum = Math.Abs(sumArray(v));
-                        if (sum == 4)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            k--;
-                        }
+                int k = 1;
+                while (x + k < confi.xDim && y - k >= 0 && A[x, y] == A[x + k, y - k] && k < 4) { k++;}
+                des = k;
+                int n=1;
+                switch(k){
+                    case 1:{
+                        while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
+                        return n == 4;
                     }
-                    else
-                    {
-                        k--;
+                    case 2:{
+                        while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
+                        return n == 3;
                     }
-                }
-                if (k < 0)
-                {
-                    des = -1;
-                    return sum;
-                }
-                else
-                {
-                    des = k;
-                    return sum;
+                    case 3:{
+                        while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
+                        return n == 2;
+                    }
+                    case 4:{
+                        return true;
+                    }
+                    default:{
+                        return false;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
                 des = -1;
-                return -1;
+                return false;
             }
         }
         /// <summary>
