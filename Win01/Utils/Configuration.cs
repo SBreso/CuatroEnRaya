@@ -19,7 +19,7 @@ namespace Win01
         {
             iconList = il;
             colorsList = cl;
-            pcOption = false;
+            pcOption = true;
             xDim = 5;
             yDim = 5;
             time = 10;

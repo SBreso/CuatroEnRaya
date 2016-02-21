@@ -275,14 +275,36 @@ namespace Win01
                     {
                         updateBoard(row, colum);
                         changeTurn();
+                        //Console.WriteLine(search4Three(row,colum));
                         //hasta aqui el turno de la persona. Ahora a la maquina
-                        colum = randomColum();
-                        row = searchNextZero(colum);
-                        while (row == -1)
+                        int col;
+                        if (search4Three(row, colum, out col))
+                        {
+                            colum = col;
+                            row = searchNextZero(colum);
+                            if (row == -1)
+                            {
+                                colum = randomColum();
+                                row = searchNextZero(colum);
+                                while (row == -1)
+                                {
+                                    colum = randomColum();
+                                    row = searchNextZero(colum);
+                                }
+                            }
+                        }
+                        else
                         {
                             colum = randomColum();
                             row = searchNextZero(colum);
+                            while (row == -1)
+                            {
+                                colum = randomColum();
+                                row = searchNextZero(colum);
+                            }
                         }
+
+
                         updateBoard(row, colum);
                         changeTurn();
                     }
@@ -409,6 +431,8 @@ namespace Win01
                 return -1;
             }
         }
+        //Metodos para chequear la matriz en busca del cuatro en raya
+        #region
         /// <summary>
         /// Checkea la matriz en busca de un cuatro en raya
         /// </summary>
@@ -423,14 +447,14 @@ namespace Win01
                 if (x + 4 <= confi.xDim && checkVertical(x, y, out des))
                 {
                     //lanzar evento partida ganada    
-                    Console.WriteLine("1\t"+des);
-                } 
+                    Console.WriteLine("1\t" + des);
+                }
                 //esta hay que hacerla 'siempre'               
                 if (checkHorizontal(x, y, out des))
                 {
                     //lanzar evento partida ganada con el desplazamiento
                     Console.WriteLine("2\t" + des);
-                }              
+                }
                 //no hace falta que haga la comprobacion si esta en las esquinas
                 if (!(x < 3 && y <= 2 - x) && !(x - confi.xDim + 3 < 3 && y > confi.xDim + confi.yDim - 5 - x) && checkNoMainDiagonal(x, y, out des))
                 {
@@ -438,7 +462,7 @@ namespace Win01
                     Console.WriteLine("3\t" + des);
                 }
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                if ( !(x<3 && y>confi.yDim-4+x) && !(y<3 && x>confi.xDim-4+y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
+                if (!(x < 3 && y > confi.yDim - 4 + x) && !(y < 3 && x > confi.xDim - 4 + y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
                 {
                     Console.WriteLine("4\t" + des);
                 }
@@ -459,13 +483,13 @@ namespace Win01
         {
             try
             {
-                int i=1;
-                while (i < 4 && A[x,y]==A[x+i,y])
+                int i = 1;
+                while (i < 4 && A[x, y] == A[x + i, y])
                 {
                     i++;
-                }               
-                des = i-1;
-                return i==4;
+                }
+                des = i - 1;
+                return i == 4;
             }
             catch (Exception ex)
             {
@@ -514,11 +538,11 @@ namespace Win01
                 Debugger.WriteException(ex, this);
                 des = -1;
                 return false;
-            }          
+            }
         }
         private bool checkHorizontalRight(int x, int y, int k)
         {
-            int n=1;
+            int n = 1;
             while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
             {
                 n++;
@@ -537,7 +561,7 @@ namespace Win01
             try
             {
                 int k = 1;
-                while (x + k < confi.xDim && y - k >= 0 && A[x, y] == A[x + k, y - k] && k < 4) { k++;}
+                while (x + k < confi.xDim && y - k >= 0 && A[x, y] == A[x + k, y - k] && k < 4) { k++; }
                 des = k;
                 if (k == 4)//ya ha habido un un cuatro en raya
                 {
@@ -559,7 +583,7 @@ namespace Win01
         {
             int n = 1;
             while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
-                        return n == 4;
+            return n == 4;
         }
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya en la diagonal principal
@@ -600,6 +624,56 @@ namespace Win01
             }
             return n == 4;
         }
+        #endregion
+        //metodos para chequear la matriz en busca de cerrar un 4 en raya
+        #region
+
+        private bool search4Three(int x, int y, out int col)
+        {
+            try
+            {
+                if (x + 2 < confi.xDim && searchVertical(x, y, out col))
+                {
+                    Console.WriteLine("Chequeo vertical\t" + col);
+                    return true;
+                }
+                col = -1;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                col = -1;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Chequeo vertical en busca del 3
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        private bool searchVertical(int x, int y, out int col)
+        {
+            try
+            {
+                int k = 1;
+                while (k < 4 && x + k < confi.xDim && A[x, y] == A[x + k, y])
+                {
+                    k++;
+                }
+                col = y;
+                return k == 3;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                col = -1;
+                return false;
+            }
+        }
+        #endregion
         /// <summary>
         /// Metodo para sumar los elementos de un array
         /// </summary>
