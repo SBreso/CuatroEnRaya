@@ -14,7 +14,7 @@ namespace Win01
 {
     class Motor
     {
-        public string version = "v.002";
+        public string version = "v.003";
         Grid board;
         Ellipse piece;
         Ellipse[,] space;// = new Ellipse[x, y];//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
@@ -275,6 +275,7 @@ namespace Win01
                     {
                         updateBoard(row, colum);
                         changeTurn();
+                        //hasta aqui el turno de la persona. Ahora a la maquina
                         colum = randomColum();
                         row = searchNextZero(colum);
                         while (row == -1)
@@ -319,6 +320,7 @@ namespace Win01
             Random rdm = new Random();
             return rdm.Next(0, confi.yDim);
         }
+        int numPieces = 1;
         /// <summary>
         /// Actualizar tablero, matriz y cambiar turno
         /// </summary>
@@ -331,16 +333,22 @@ namespace Win01
                 if (turn == 1)
                 {
                     A[row, colum] = 1;
-                    checkA(row,colum);
+                    if (numPieces > 6)//hasta que no se poenen 7 piezas no hace falta hacer chequeos
+                    {
+                        checkA(row, colum);
+                    }
                     space[row, colum].Fill = p1.ColorPieza;
                 }
                 else
                 {
                     A[row, colum] = -1;
-                    checkA(row, colum);
+                    if (numPieces > 6)//hasta que no se poenen 7 piezas no hace falta hacer chequeos
+                    {
+                        checkA(row, colum);
+                    }
                     space[row, colum].Fill = p2.ColorPieza;
                 }
-
+                if (numPieces < 7) numPieces++;//controlar los primeros turnos
             }
             catch (Exception ex)
             {
@@ -410,29 +418,29 @@ namespace Win01
         {
             try
             {
-                int des;
+                int des;//representa el desplazamiento respecto a la posicion original, para saber exactamento donde se encuentran las 4 fichas
                 //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
                 if (x + 4 <= confi.xDim && checkVerticalArray(x, y, out des))
                 {
                     //lanzar evento partida ganada    
-                    Console.WriteLine("1"+des);
+                    Console.WriteLine("1\t"+des);
                 } 
                 //esta hay que hacerla 'siempre'               
                 if (checkHorizontalArray(x, y, out des))
                 {
                     //lanzar evento partida ganada con el desplazamiento
-                    Console.WriteLine("2"+des);
+                    Console.WriteLine("2\t" + des);
                 }              
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                if (!(x < 3 && y <= 2 - x) && !(x - confi.xDim + 3 < 3 && y > confi.xDim + confi.yDim - 5 - x) && checkNoMainDiagonal(x, y, out des)==4)
+                if (!(x < 3 && y <= 2 - x) && !(x - confi.xDim + 3 < 3 && y > confi.xDim + confi.yDim - 5 - x) && checkNoMainDiagonal(x, y, out des))
                 {
                     //lanzar evento
-                    Console.WriteLine("3"+des);
+                    Console.WriteLine("3\t" + des);
                 }
-                //controlar que no entre en las esquinas
-                if (checkMainDiagonal(x, y, out des) == 4)
+                //no hace falta que haga la comprobacion si esta en las esquinas
+                if ( !(x<3 && y>confi.yDim-4+x) && !(y<3 && x>confi.xDim-4+y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
                 {
-                    Console.WriteLine("4"+des);
+                    Console.WriteLine("4\t" + des);
                 }
 
             }
@@ -466,11 +474,6 @@ namespace Win01
                 return false;
             }
         }
-
-        /*
-         * se puede optimizar la comprobacion, haciendo calculos intermedios
-         * para que no siga haciendolo en caso de que se produzcan ciertas condiciones
-         */
         /// <summary>
         /// Calcula los posibles vectores horizontales y si suman 4. Si da que si, devuelve el desplazamiento respecto a la posicion dada
         /// </summary>
@@ -556,26 +559,13 @@ namespace Win01
                 int k = 1;
                 while (x + k < confi.xDim && y - k >= 0 && A[x, y] == A[x + k, y - k] && k < 4) { k++;}
                 des = k;
-                int n=1;
-                switch(k){
-                    case 1:{
-                        while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
-                        return n == 4;
-                    }
-                    case 2:{
-                        while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
-                        return n == 3;
-                    }
-                    case 3:{
-                        while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
-                        return n == 2;
-                    }
-                    case 4:{
-                        return true;
-                    }
-                    default:{
-                        return false;
-                    }
+                if (k == 4)//ya ha habido un un cuatro en raya
+                {
+                    return true;
+                }
+                else//toca checkear hacia la derecha
+                {
+                    return checkNonMainDiagonalRight(x, y, k);
                 }
             }
             catch (Exception ex)
@@ -585,6 +575,12 @@ namespace Win01
                 return false;
             }
         }
+        private bool checkNonMainDiagonalRight(int x, int y, int k)
+        {
+            int n = 1;
+            while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
+                        return n == 4;
+        }
         /// <summary>
         /// Ckequear las posibles diagonales principales
         /// </summary>
@@ -592,54 +588,37 @@ namespace Win01
         /// <param name="y"></param>
         /// <param name="des"></param>
         /// <returns></returns>
-        private int checkMainDiagonal(int x, int y, out int des)
+        private bool checkMainDiagonal(int x, int y, out int des)
         {
             try
             {
-                int[] v = new int[4];
-                int sum = -1;
-                //controlar que x e y pueden formar vector en la llamada
-                int k = 3;
-                while (k >= 0)
+                int k = 1;
+                while (x - k >= 0 && y - k >= 0 && A[x, y] == A[x - k, y - k] && k < 4) { k++; }
+                des = k;
+                if (k == 4)//ya ha habido un cuatro en raya
                 {
-                    if (x + k < confi.xDim && y + k < confi.yDim && y - (3 - k) >= 0 && x - (3 - k) >= 0)
-                    {
-                        for (int j = 0; j < 4; j++)
-                        {
-                            v[j] = A[x + k - j, y + k - j];
-                        }
-                        sum = Math.Abs(sumArray(v));
-                        if (sum== 4)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            k--;
-                        }
-                    }
-                    else
-                    {
-                        k--;
-                    }
+                    return true;
                 }
-                if (k < 0)
+                else//hay que chequear hacia la derecha
                 {
-                    des = -1;
-                    return sum;
-                }
-                else
-                {
-                    des = k;
-                    return sum;
+                    return checkMainDiagonalRight(x, y, k);
                 }
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
                 des = -1;
-                return -1;
+                return false;
             }
+        }
+        private bool checkMainDiagonalRight(int x, int y, int k)
+        {
+            int n = 1;
+            while (x + n < confi.xDim && y + n < confi.yDim && A[x, y] == A[x + n, y + n] && n <= 4 - k)
+            {
+                n++;
+            }
+            return n == 4;
         }
         /// <summary>
         /// Metodo para sumar los elementos de un array
