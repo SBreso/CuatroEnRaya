@@ -282,7 +282,7 @@ namespace Win01
                         {
                             colum = col;
                             row = searchNextZero(colum);
-                            if (row == -1)
+                            if (row == -1)//controlamos que en esta columna se pueda poner una ficha, si no, aleatoria
                             {
                                 colum = randomColum();
                                 row = searchNextZero(colum);
@@ -293,7 +293,7 @@ namespace Win01
                                 }
                             }
                         }
-                        else
+                        else//si no hay 3 en raya, aleatoria
                         {
                             colum = randomColum();
                             row = searchNextZero(colum);
