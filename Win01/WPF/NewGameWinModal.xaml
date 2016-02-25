@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Win01.NewGameWinModal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="NewGameWinModal" MinWidth="365" MinHeight="250" Loaded="Window_Loaded" Width="330" Height="350">
+        Title="NewGameWinModal" MinWidth="365" MinHeight="250" Loaded="Window_Loaded" Width="330" Height="350" Icon="/FourConnect;component/4Raya.ico" ShowInTaskbar="False">
         <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

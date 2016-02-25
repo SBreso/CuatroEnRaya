@@ -19,13 +19,17 @@ namespace Win01
         {
             iconList = il;
             colorsList = cl;
-            pcOption = false;
-            xDim = 5;
+            resetConfi();
+        }
+
+        public void resetConfi()
+        {            
+            pcOption = true;
+            xDim = 6;
             yDim = 5;
             time = 10;
             playerList = new List<Player>();
         }
-
         public void DefaultGamers()
         {
             try

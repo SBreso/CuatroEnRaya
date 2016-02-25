@@ -141,6 +141,7 @@ namespace Win01
                         showTime(confi.isTimer);
                         this.mainDock.Visibility = Visibility.Visible;
                         motor = new Motor(confi);
+                        motor.victoryWinEvent += new Motor.victoryWindel(showVictoryWin);
                         statuBar.Text = motor.version;
                         motor.run();
                         //buildBoard(confi.xDim, confi.yDim);
@@ -150,6 +151,44 @@ namespace Win01
                     {
                         confi.clearPlayers();
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+        /// <summary>
+        /// Recibimos el evento de partida ganada
+        /// </summary>
+        /// <param name="nomPlayer"></param>
+        private void showVictoryWin(String nomPlayer)
+        {
+            try
+            {
+                String text = String.Format("¡¡Enhorabuena {0}!!\n¿quieres jugar una partida con el mismojugador?",nomPlayer);
+                MessageBoxResult victoryWin = MessageBox.Show(text, "Victoria", MessageBoxButton.YesNo);
+                switch (victoryWin)
+                {
+                    case(MessageBoxResult.Yes):
+                    {
+                        motor.mode = Motor.MODE.OFF;
+                        motor.run();
+                        break;
+                    }
+                    case(MessageBoxResult.No):{
+                        changeFlag();//para poder iniciar una nueva partida
+                        motor.mode = Motor.MODE.OFF;
+                        confi.resetConfi();//reseteamos la configuracion a los valores por defecto
+                        break;
+                    }
+                    case (MessageBoxResult.Cancel):
+                        {
+                            changeFlag();//para poder iniciar una nueva partida
+                            motor.mode = Motor.MODE.OFF;
+                            confi.resetConfi();//reseteamos la configuracion a los valores por defecto
+                            break;
+                        }
                 }
             }
             catch (Exception ex)

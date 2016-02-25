@@ -14,19 +14,28 @@ namespace Win01
 {
     class Motor
     {
+        //ATRIBUTOS DEL MOTOR
+        #region
+        public enum MODE { ON, OFF };
+        public MODE mode{get;set;}
         public string version = "v.003";
-        Grid board;
-        Ellipse piece;
-        Ellipse[,] space;// = new Ellipse[x, y];//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
-        Player p1, p2;
+        Grid board;//tablero de juego
+        double boardProportion;//proporcion del tablero, para controlar la redimension
+        Ellipse piece;//ficha de jeugo
+        Ellipse[,] space;//para los espacios del tablero. Igual tengo que hacer una lista para cambiar de color????
+        Player p1, p2;//jugadores
         int turn;//controlar el turno de la partida: 1->p1 y -1->p2
-        private enum OPPONENT { HUMAN, PC };
-        private OPPONENT opponent;
-        Configuration confi;
-        int[,] A;
-        double boardProportion;
+        private enum OPPONENT { HUMAN, PC };//posibles contrincantes
+        private OPPONENT opponent;//contrincante
+        Configuration confi;//configuracion de la partida
+        private enum FOUR_CONNECT {VERTICAL,HORIZONTAL,NOMAIN,MAIN};//el tipo de cuatro en raya
+        public delegate void victoryWindel(String playerNom);
+        public event victoryWindel victoryWinEvent;
+        int[,] A;//matriz de control
+        #endregion
         public Motor(Configuration c)
         {
+            mode = MODE.OFF;
             confi = c;
             //establecemos el tipo de juego
             if (confi.pcOption)
@@ -39,9 +48,7 @@ namespace Win01
             }
             p1 = confi.playerList.ElementAt(0);
             p2 = confi.playerList.ElementAt(1);
-            A = new int[confi.xDim, confi.yDim];
-            fillInA();
-            turn = 1;
+            A = new int[confi.xDim, confi.yDim];           
         }
         /// <summary>
         /// Llenar la matriz de ceros
@@ -68,6 +75,9 @@ namespace Win01
         /// </summary>
         public void run()
         {
+            mode = MODE.ON;
+            fillInA();
+            turn = 1;
             buildBoard();
         }
         /// <summary>
@@ -131,8 +141,6 @@ namespace Win01
                         Grid.SetColumn(borderCell, j);
                         board.Children.Add(borderCell);
                         space[i - 1, j] = new Ellipse();
-                        //space[i - 1, j].Height = diametre;
-                        //space[i - 1, j].Width = diametre;
                         space[i - 1, j].Fill = new SolidColorBrush(Colors.White);
                         borderCell.Child = space[i - 1, j];
                     }
@@ -146,10 +154,8 @@ namespace Win01
                 Grid.SetColumnSpan(borderPiece, y);//colspan del num de columnas
                 table.Children.Add(board);
                 piece = new Ellipse();
-                resizePiece(diametre + 5);
-                //piece.Height = diametre + 5;//le añodo lo que le quite
-                //piece.Width = diametre + 5;
-                piece.Fill = p1.ColorPieza;
+                resetPiece(diametre + 5,p1.ColorPieza.Color);//le añado 5 que le quite antes
+                //piece.Fill = p1.ColorPieza;
                 borderPiece.Child = piece;
                 piece.HorizontalAlignment = HorizontalAlignment.Left;
                 boardProportion = board.Height / board.Width;
@@ -158,6 +164,35 @@ namespace Win01
                 board.MouseLeftButtonUp += new MouseButtonEventHandler(board_OnClick);
             }
             catch (Exception ex) { Debugger.WriteException(ex, this); }
+        }
+
+        private LinearGradientBrush createLinerGradient(bool fill, Color c)
+        {
+            LinearGradientBrush brush = new LinearGradientBrush();
+            TransformGroup tg = new TransformGroup();
+            ScaleTransform scale=    new ScaleTransform(0.5,0.5);
+            SkewTransform skew=new SkewTransform(0.5,0.5);
+            RotateTransform rotate;
+            if (fill)
+            {
+                rotate = new RotateTransform(225, 0.5, 0.5);
+                
+            }
+            else
+            {
+                rotate = new RotateTransform(45, 0.5, 0.5);               
+            }
+            brush.GradientStops = new GradientStopCollection()
+            {
+                new GradientStop(Colors.Black,0.066),
+                new GradientStop(c,0.581)
+            };
+            
+            tg.Children.Add(scale);
+            tg.Children.Add(skew);
+            tg.Children.Add(rotate);            
+           
+            return brush;
         }
         /// <summary>
         /// Asignar tamaño a los espacios del tablero
@@ -182,12 +217,17 @@ namespace Win01
         /// Asignar tamaño a la ficha del jugador
         /// </summary>
         /// <param name="diametre"></param>
-        private void resizePiece(double diametre)
+        private void resetPiece(double diametre,Color c)
         {
             try
             {
+                LinearGradientBrush brushStroke = createLinerGradient(false,c);
+                LinearGradientBrush brushFill = createLinerGradient(true,c);                
+                piece.StrokeThickness = 10 * diametre / 100;                                
                 piece.Height = diametre;
                 piece.Width = diametre;
+                piece.Fill = brushFill;
+                piece.Stroke = brushStroke;
             }
             catch (Exception ex)
             {
@@ -215,7 +255,16 @@ namespace Win01
                     board.Width = board.Height / boardProportion;
                 }
                 resizeSpace(board.Width / confi.yDim - 5);
-                resizePiece(board.Width / confi.yDim);
+                Color c;
+                if (turn == 1)
+                {
+                    c = p1.ColorPieza.Color;
+                }
+                else
+                {
+                    c = p2.ColorPieza.Color;
+                }
+                resetPiece(board.Width / confi.yDim,c);
             }
             catch (Exception ex)
             {
@@ -231,13 +280,16 @@ namespace Win01
         {
             try
             {
-                Grid b = (Grid)sender;
-                double widthBoard = b.ActualWidth;
-                int radio = (int)(piece.Width / 2);
-                double x = e.GetPosition(b).X;
-                if (x >= radio && x <= widthBoard - radio)
+                if (mode == MODE.ON)
                 {
-                    piece.Margin = new Thickness(x - radio, 0, 0, 0);
+                    Grid b = (Grid)sender;
+                    double widthBoard = b.ActualWidth;
+                    int radio = (int)(piece.Width / 2);
+                    double x = e.GetPosition(b).X;
+                    if (x >= radio && x <= widthBoard - radio)
+                    {
+                        piece.Margin = new Thickness(x - radio, 0, 0, 0);
+                    }
                 }
 
                 //Console.WriteLine(x);
@@ -256,53 +308,68 @@ namespace Win01
         {
             try
             {
-                int row;
-                int colum;
-                Grid b = (Grid)sender;
-                if (opponent == OPPONENT.PC)//contra la maquina
+                if (mode == MODE.ON)
                 {
-                    int numColums = confi.yDim;//numero de columnas                    
-                    double boardWidth = b.ActualWidth;//ancho del tablero
-                    double x = e.GetPosition(b).X;//posicion X del puntero respecto al tablero
-                    double xCell = boardWidth / numColums;//ancho de la celda
-                    colum = 0;
-                    while (colum < numColums && x >= (colum + 1) * xCell)
+                    int row;
+                    int colum;
+                    Grid b = (Grid)sender;
+                    if (opponent == OPPONENT.PC)//contra la maquina
                     {
-                        colum++;
-                    }
-                    row = searchNextZero(colum);//si devuelve -1 la columna esta llena y toca elegir nueva columna
-                    if (row != -1)//controlamos que quede espacio, si no, no camnbiamos de turno
-                    {
-                        updateBoard(row, colum);
-                        changeTurn();
-                        //hasta aqui el turno de la persona. Ahora a la maquina
-                        colum = randomColum();
-                        row = searchNextZero(colum);
-                        while (row == -1)
+                        int numColums = confi.yDim;//numero de columnas                    
+                        double boardWidth = b.ActualWidth;//ancho del tablero
+                        double x = e.GetPosition(b).X;//posicion X del puntero respecto al tablero
+                        double xCell = boardWidth / numColums;//ancho de la celda
+                        colum = 0;
+                        while (colum < numColums && x >= (colum + 1) * xCell)
                         {
+                            colum++;
+                        }
+                        row = searchNextZero(colum);//si devuelve -1 la columna esta llena y toca elegir nueva columna
+                        if (row != -1)//controlamos que quede espacio, si no, no camnbiamos de turno
+                        {
+                            updateBoard(row, colum);
+                            if (checkA(row, colum))
+                            {
+                                return;
+                            }
+                            changeTurn();
+                            //hasta aqui el turno de la persona. Ahora a la maquina
                             colum = randomColum();
                             row = searchNextZero(colum);
+                            while (row == -1)
+                            {
+                                colum = randomColum();
+                                row = searchNextZero(colum);
+                            }
+                            updateBoard(row, colum);
+                            if (checkA(row, colum))
+                            {
+                                return;
+                            }
+                            changeTurn();
                         }
-                        updateBoard(row, colum);
-                        changeTurn();
                     }
-                }
-                else//con un amigo
-                {
-                    int numColums = confi.yDim;//numero de columnas                    
-                    double boardWidth = b.ActualWidth;//ancho del tablero
-                    double x = e.GetPosition(b).X;//posicion X del puntero respecto al tablero
-                    double xCell = boardWidth / numColums;//ancho de la celda
-                    colum = 0;
-                    while (colum < numColums && x >= (colum + 1) * xCell)
+                    else//con un amigo
                     {
-                        colum++;
-                    }
-                    row = searchNextZero(colum);
-                    if (row != -1)//controlamos que quede espacio, si no, no camnbiamos de turno
-                    {
-                        updateBoard(row, colum);
-                        changeTurn();
+                        int numColums = confi.yDim;//numero de columnas                    
+                        double boardWidth = b.ActualWidth;//ancho del tablero
+                        double x = e.GetPosition(b).X;//posicion X del puntero respecto al tablero
+                        double xCell = boardWidth / numColums;//ancho de la celda
+                        colum = 0;
+                        while (colum < numColums && x >= (colum + 1) * xCell)//donde deja caer la ficha
+                        {
+                            colum++;
+                        }
+                        row = searchNextZero(colum);//fila donde se colaca la ficha
+                        if (row != -1)//controlamos que quede espacio, si no, no camnbiamos de turno
+                        {
+                            updateBoard(row, colum);
+                            if (checkA(row, colum))
+                            {
+                                return;
+                            }
+                            changeTurn();
+                        }
                     }
                 }
             }
@@ -333,22 +400,13 @@ namespace Win01
                 if (turn == 1)
                 {
                     A[row, colum] = 1;
-                    if (numPieces > 6)//hasta que no se poenen 7 piezas no hace falta hacer chequeos
-                    {
-                        checkA(row, colum);
-                    }
-                    space[row, colum].Fill = p1.ColorPieza;
+                    space[row, colum].Fill = p1.ColorPieza;                                 
                 }
                 else
                 {
                     A[row, colum] = -1;
-                    if (numPieces > 6)//hasta que no se poenen 7 piezas no hace falta hacer chequeos
-                    {
-                        checkA(row, colum);
-                    }
-                    space[row, colum].Fill = p2.ColorPieza;
+                    space[row, colum].Fill = p2.ColorPieza;                               
                 }
-                if (numPieces < 7) numPieces++;//controlar los primeros turnos
             }
             catch (Exception ex)
             {
@@ -365,12 +423,14 @@ namespace Win01
                 if (turn == 1)
                 {
                     turn = -1;
-                    piece.Fill = p2.ColorPieza;
+                    resetPiece(board.ActualWidth / confi.yDim, p2.ColorPieza.Color);
+                    //piece.Fill = p2.ColorPieza;
                 }
                 else
                 {
                     turn = 1;
-                    piece.Fill = p1.ColorPieza;
+                    resetPiece(board.ActualWidth / confi.yDim, p1.ColorPieza.Color);
+                    //piece.Fill = p1.ColorPieza;
                 }
 
             }
@@ -414,7 +474,7 @@ namespace Win01
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void checkA(int x, int y)
+        private bool checkA(int x, int y)
         {
             try
             {
@@ -423,26 +483,107 @@ namespace Win01
                 if (x + 4 <= confi.xDim && checkVertical(x, y, out des))
                 {
                     //lanzar evento partida ganada    
-                    Console.WriteLine("1\t"+des);
-                } 
+                    //Console.WriteLine("1\t"+des);
+                    victoryEvent(x, y, des, FOUR_CONNECT.VERTICAL);
+                    return true; 
+                }
                 //esta hay que hacerla 'siempre'               
-                if (checkHorizontal(x, y, out des))
+                else if (checkHorizontal(x, y, out des))
                 {
                     //lanzar evento partida ganada con el desplazamiento
-                    Console.WriteLine("2\t" + des);
+                    //Console.WriteLine("2\t" + des);
+                    victoryEvent(x, y, des, FOUR_CONNECT.HORIZONTAL);
+                    return true;
                 }              
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                if (!(x < 3 && y <= 2 - x) && !(x - confi.xDim + 3 < 3 && y > confi.xDim + confi.yDim - 5 - x) && checkNoMainDiagonal(x, y, out des))
+                else if (!(x < 3 && y <= 2 - x) && !(x - confi.xDim + 3 < 3 && y > confi.xDim + confi.yDim - 5 - x) && checkNoMainDiagonal(x, y, out des))
                 {
                     //lanzar evento
-                    Console.WriteLine("3\t" + des);
+                    //Console.WriteLine("3\t" + des);
+                    victoryEvent(x, y, des, FOUR_CONNECT.NOMAIN);
+                    return true;
                 }
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                if ( !(x<3 && y>confi.yDim-4+x) && !(y<3 && x>confi.xDim-4+y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
+                else if ( !(x<3 && y>confi.yDim-4+x) && !(y<3 && x>confi.xDim-4+y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
                 {
-                    Console.WriteLine("4\t" + des);
+                    //Console.WriteLine("4\t" + des);
+                    victoryEvent(x, y, des, FOUR_CONNECT.MAIN);
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
 
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                return false;
+            }
+        }
+        /// <summary>
+        /// Este metodo cambia el color de las piezas que consiguen el 4 en raya. Añade una partida ganada al jugador que la ha ganado
+        /// y avisa a la ventana principal para que salte la ventana de victoria
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="des"></param>
+        /// <param name="type"></param>
+        private void victoryEvent(int x, int y, int des, FOUR_CONNECT type)
+        {
+            try
+            {
+                if (type == FOUR_CONNECT.VERTICAL)
+                {
+                    int k = 0;
+                    while (k < 4)
+                    {
+                        space[x + k, y].Fill = new SolidColorBrush(Colors.Gold);
+                        k++;
+                    }
+                    //MessageBox.Show("vertical");
+                }
+                if (type == FOUR_CONNECT.HORIZONTAL)
+                {
+                    int acc = 0;
+                    while (acc < 4)
+                    {
+                        space[x, y-(des-1)+acc].Fill = new SolidColorBrush(Colors.Gold);
+                        acc++;
+                    }
+                    //MessageBox.Show("horizontal");
+                }
+                if (type == FOUR_CONNECT.NOMAIN)
+                {
+                    int acc = 0;
+                    while (acc < 4)
+                    {
+                        space[x + (des - 1) - acc, y - (des - 1) + acc].Fill = new SolidColorBrush(Colors.Gold);
+                        acc++;
+                    }
+                    //MessageBox.Show("nomain");
+                }
+                if (type == FOUR_CONNECT.MAIN)
+                {
+                    int acc = 0;
+                    while (acc < 4)
+                    {
+                        space[x - (des - 1) + acc, y - (des - 1) + acc].Fill = new SolidColorBrush(Colors.Gold);
+                        acc++;
+                    }
+                    //MessageBox.Show("main");
+                }
+                if (turn == 1)
+                {
+                    p1.Ganadas = p1.Ganadas + 1;
+                    victoryWinEvent(p1.Nombre);
+                }
+                else
+                {
+                    p2.Ganadas = p2.Ganadas + 1;
+                    victoryWinEvent(p2.Nombre);
+                }
             }
             catch (Exception ex)
             {
@@ -523,7 +664,7 @@ namespace Win01
             {
                 n++;
             }
-            return n == 4;
+            return k+n == 5;
         }
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya en la diagonal no principal
@@ -559,7 +700,7 @@ namespace Win01
         {
             int n = 1;
             while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
-                        return n == 4;
+            return k + n == 5;
         }
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya en la diagonal principal
@@ -598,7 +739,7 @@ namespace Win01
             {
                 n++;
             }
-            return n == 4;
+            return k + n == 5;
         }
         /// <summary>
         /// Metodo para sumar los elementos de un array
