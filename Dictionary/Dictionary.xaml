@@ -27,7 +27,7 @@
         <TransformGroup>
             <ScaleTransform CenterY="0.5" CenterX="0.5"/>
             <SkewTransform CenterY="0.5" CenterX="0.5"/>
-            <RotateTransform Angle="45" CenterY="0.5" CenterX="0.5"/>
+            <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
             <TranslateTransform/>
         </TransformGroup>
     </LinearGradientBrush.RelativeTransform>
@@ -37,7 +37,7 @@
             <TransformGroup>
                 <ScaleTransform CenterY="0.5" CenterX="0.5"/>
                 <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                <RotateTransform Angle="225" CenterY="0.5" CenterX="0.5"/>
+                <RotateTransform Angle="270" CenterY="0.5" CenterX="0.5"/>
                 <TranslateTransform/>
             </TransformGroup>
         </LinearGradientBrush.RelativeTransform>

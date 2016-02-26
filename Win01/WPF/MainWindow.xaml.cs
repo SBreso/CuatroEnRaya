@@ -711,12 +711,12 @@ namespace Win01
                 Debugger.WriteException(ex, this);
             }
         }
-        /// <summary>
-        /// Verificamos si hay una partida en marcha para mostrar o no los jugadores
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         #endregion
+        private void proof(Object sender, MouseButtonEventArgs args)
+        {
+            motor.fillAToTest(4);
+            MessageBox.Show(motor.checkA(5, 0).ToString());
+        }
     }
     //Comandos    
     public static class Commands

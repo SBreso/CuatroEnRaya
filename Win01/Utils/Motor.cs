@@ -13,14 +13,14 @@ using Dictionary;
 
 namespace Win01
 {
-    class Motor
+    public class Motor
     {
         //ATRIBUTOS DEL MOTOR
         #region
         public enum MODE { ON, OFF };
-        public MODE mode{get;set;}
-        public string version = "v.003";     
-        public enum FOUR_CONNECT {VERTICAL,HORIZONTAL,NOMAIN,MAIN};//el tipo de cuatro en raya
+        public MODE mode { get; set; }
+        public string version = "v.003";
+        public enum FOUR_CONNECT { VERTICAL, HORIZONTAL, NOMAIN, MAIN };//el tipo de cuatro en raya
         public delegate void victoryDel(int x, int y, int des, FOUR_CONNECT type);
         public event victoryDel victoryEvent;
         int[,] A;//matriz de control
@@ -32,7 +32,8 @@ namespace Win01
             mode = MODE.OFF;
             m = xDim;
             n = yDim;
-            A = new int[m,n];           
+            A = new int[m, n];
+            
         }
         /// <summary>
         /// Llenar la matriz de ceros
@@ -61,35 +62,35 @@ namespace Win01
         {
             mode = MODE.ON;
             fillInA();
-        }       
+        }
         public int randomColum()
         {
             Random rdm = new Random();
-            return rdm.Next(0,n);
+            return rdm.Next(0, n);
         }
         /// <summary>
         /// Actualizar tablero, matriz y cambiar turno
         /// </summary>
         /// <param name="row"></param>
         /// <param name="colum"></param>
-        public void updateA(int row, int colum,int turn)
+        public void updateA(int row, int colum, int turn)
         {
             try
             {
                 if (turn == 1)
                 {
-                    A[row, colum] = 1;                               
+                    A[row, colum] = 1;
                 }
                 else
                 {
-                    A[row, colum] = -1;                              
+                    A[row, colum] = -1;
                 }
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
             }
-        }       
+        }
         /// <summary>
         /// Buscamos la posicion donde hay que dejar caer la ficha
         /// </summary>
@@ -128,14 +129,15 @@ namespace Win01
         {
             try
             {
+                //return true;
                 int des;//representa el desplazamiento respecto a la posicion original, para saber exactamento donde se encuentran las 4 fichas
                 //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
-                if (x + 4 <= m && checkVertical(x, y, out des))
+                if (x + 3 < m && checkVertical(x, y, out des))
                 {
                     //lanzar evento partida ganada    
                     //Console.WriteLine("1\t"+des);
                     victoryEvent(x, y, des, FOUR_CONNECT.VERTICAL);
-                    return true; 
+                    return true;
                 }
                 //esta hay que hacerla 'siempre'               
                 else if (checkHorizontal(x, y, out des))
@@ -144,7 +146,7 @@ namespace Win01
                     //Console.WriteLine("2\t" + des);
                     victoryEvent(x, y, des, FOUR_CONNECT.HORIZONTAL);
                     return true;
-                }              
+                }
                 //no hace falta que haga la comprobacion si esta en las esquinas
                 else if (!(x < 3 && y <= 2 - x) && !(x - m + 3 < 3 && y > m + n - 5 - x) && checkNoMainDiagonal(x, y, out des))
                 {
@@ -154,7 +156,7 @@ namespace Win01
                     return true;
                 }
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                else if ( !(x<3 && y>n-4+x) && !(y<3 && x>m-4+y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
+                else if (!(x < 3 && y > n - 4 + x) && !(y < 3 && x > m - 4 + y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
                 {
                     //Console.WriteLine("4\t" + des);
                     victoryEvent(x, y, des, FOUR_CONNECT.MAIN);
@@ -172,7 +174,6 @@ namespace Win01
                 return false;
             }
         }
-     
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya vertical
         /// </summary>
@@ -183,13 +184,13 @@ namespace Win01
         {
             try
             {
-                int i=1;
-                while (i < 4 && A[x,y]==A[x+i,y])
+                int i = 1;
+                while (i < 4 && A[x, y] == A[x + i, y])
                 {
                     i++;
-                }               
-                des = i-1;
-                return i==4;
+                }
+                des = i - 1;
+                return i == 4;
             }
             catch (Exception ex)
             {
@@ -238,16 +239,16 @@ namespace Win01
                 Debugger.WriteException(ex, this);
                 des = -1;
                 return false;
-            }          
+            }
         }
         private bool checkHorizontalRight(int x, int y, int k)
         {
-            int j=1;
-            while (y + j <n && A[x, y] == A[x, y + j] && j <= 4 - k)
+            int j = 1;
+            while (y + j < n && A[x, y] == A[x, y + j] && j <= 4 - k)
             {
                 j++;
             }
-            return k+j == 5;
+            return k + j == 5;
         }
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya en la diagonal no principal
@@ -261,7 +262,7 @@ namespace Win01
             try
             {
                 int i = 1;
-                while (x + i < m && y - i >= 0 && A[x, y] == A[x + i, y - i] && i < 4) { i++;}
+                while (x + i < m && y - i >= 0 && A[x, y] == A[x + i, y - i] && i < 4) { i++; }
                 des = i;
                 if (i == 4)//ya ha habido un un cuatro en raya
                 {
@@ -323,6 +324,74 @@ namespace Win01
                 i++;
             }
             return k + i == 5;
+        }
+
+        private void showA()
+        {
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    Console.Write(A[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+        private void fillADifferent()
+        {
+            int k = 0;
+            for (int i = 0; i < m; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    A[i, j] = k++;
+                }
+            }
+        }
+        public void fillAToTest(int option)
+        {
+            fillADifferent();
+            switch (option)
+            {
+                case 0:
+                    {
+                        //la matriz es toda diferente   
+                        break;
+                    }
+                case 1:
+                    {
+                        for (int i = 0; i <4; i++)
+                        {
+                            A[i, 0] = 1;//columna que hace cuatro en raya                           
+                        }
+                        break;
+                    }
+                case 2:
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            A[0, j] = 1;//esta es la fila del cuatro en raya
+                        }
+                            break;
+                    }
+                case 3:
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            A[i, i] = 1;//diagonal en la principal                            
+                        }
+                        break;
+                    }
+                case 4:
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            A[m-1-i, 0+i] = 1;//diagonal no principal
+                        }
+                        break;
+                    }
+            }
+            showA();
         }
         /// <summary>
         /// Metodo para sumar los elementos de un array
