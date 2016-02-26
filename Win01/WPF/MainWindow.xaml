@@ -15,16 +15,15 @@
                 <Label Content="{Binding Ganadas}" ContentStringFormat="Ganadas: {0}" />
             </StackPanel>
         </DataTemplate>
-        <Style TargetType="{x:Type Ellipse}">
-            <Setter Property="StrokeThickness" Value="5"/>
+        <!--<Style TargetType="{x:Type Ellipse}">
             <Setter Property="Fill">
                 <Setter.Value>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush x:Name="linearGradientFill" EndPoint="0.5,1" StartPoint="0.5,0">
                         <LinearGradientBrush.RelativeTransform>
                             <TransformGroup>
                                 <ScaleTransform CenterY="0.5" CenterX="0.5"/>
                                 <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                                <RotateTransform Angle="46" CenterY="0.5" CenterX="0.5"/>
+                                <RotateTransform Angle="45" CenterY="0.5" CenterX="0.5"/>
                                 <TranslateTransform/>
                             </TransformGroup>
                         </LinearGradientBrush.RelativeTransform>
@@ -33,7 +32,7 @@
             </Setter>
             <Setter Property="Stroke">
                 <Setter.Value>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush x:Name="linearGradientStroke" EndPoint="0.5,1" StartPoint="0.5,0">
                         <LinearGradientBrush.RelativeTransform>
                             <TransformGroup>
                                 <ScaleTransform CenterY="0.5" CenterX="0.5"/>
@@ -45,7 +44,7 @@
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
     </Window.Resources>
     <!--Comandos para shortKeys en Nuevo y Panel Izquierdo-->
     <Window.CommandBindings>

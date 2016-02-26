@@ -22,4 +22,24 @@
     <BitmapImage UriSource="./Images/Star_wars_longshadow-11.png"/>
     <BitmapImage UriSource="./Images/Star_wars_longshadow-12.png"/>
     </x:Array>
+    <LinearGradientBrush x:Key="linearGradientFill">
+    <LinearGradientBrush.RelativeTransform>
+        <TransformGroup>
+            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+            <RotateTransform Angle="45" CenterY="0.5" CenterX="0.5"/>
+            <TranslateTransform/>
+        </TransformGroup>
+    </LinearGradientBrush.RelativeTransform>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="linearGradientStroke">
+        <LinearGradientBrush.RelativeTransform>
+            <TransformGroup>
+                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                <RotateTransform Angle="225" CenterY="0.5" CenterX="0.5"/>
+                <TranslateTransform/>
+            </TransformGroup>
+        </LinearGradientBrush.RelativeTransform>
+    </LinearGradientBrush>
 </ResourceDictionary>

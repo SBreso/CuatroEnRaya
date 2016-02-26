@@ -89,6 +89,14 @@ namespace Win01
             }
         }
 
+        public void showPlayersDetail()
+        {
+            foreach (Player p in playerList)
+            {
+                Console.WriteLine(p.Nombre + "\t" + p.ColorPieza.ToString());
+            }
+        }
+
         public String toString()
         {
             return "1 or 2 players? " + pcOption + "\n with time: " + isTimer + "\nWhat time? " + time + "\nX: " + xDim + "\tY: " + yDim;
