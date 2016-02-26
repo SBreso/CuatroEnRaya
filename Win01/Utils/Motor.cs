@@ -20,28 +20,19 @@ namespace Win01
         public enum MODE { ON, OFF };
         public MODE mode{get;set;}
         public string version = "v.003";     
-        public enum OPPONENT { HUMAN, PC };//posibles contrincantes
-        public OPPONENT opponent;//contrincante
-        Configuration confi;//configuracion de la partida
         public enum FOUR_CONNECT {VERTICAL,HORIZONTAL,NOMAIN,MAIN};//el tipo de cuatro en raya
         public delegate void victoryDel(int x, int y, int des, FOUR_CONNECT type);
         public event victoryDel victoryEvent;
         int[,] A;//matriz de control
+        int m;//filas
+        int n;//columnas
         #endregion
-        public Motor(Configuration c)
+        public Motor(int xDim, int yDim)
         {
             mode = MODE.OFF;
-            confi = c;
-            //establecemos el tipo de juego
-            if (confi.pcOption)
-            {
-                opponent = OPPONENT.PC;
-            }
-            else
-            {
-                opponent = OPPONENT.HUMAN;
-            }
-            A = new int[confi.xDim, confi.yDim];           
+            m = xDim;
+            n = yDim;
+            A = new int[m,n];           
         }
         /// <summary>
         /// Llenar la matriz de ceros
@@ -50,9 +41,9 @@ namespace Win01
         {
             try
             {
-                for (int i = 0; i < confi.xDim; i++)
+                for (int i = 0; i < m; i++)
                 {
-                    for (int j = 0; j < confi.yDim; j++)
+                    for (int j = 0; j < n; j++)
                     {
                         A[i, j] = 0;
                     }
@@ -74,7 +65,7 @@ namespace Win01
         public int randomColum()
         {
             Random rdm = new Random();
-            return rdm.Next(0, confi.yDim);
+            return rdm.Next(0,n);
         }
         /// <summary>
         /// Actualizar tablero, matriz y cambiar turno
@@ -108,8 +99,7 @@ namespace Win01
         {
             try
             {
-                int numRows = confi.xDim;
-                int row = numRows - 1;
+                int row = m - 1;
                 while (row >= 0 && A[row, colum] != 0)
                 {
                     row--;
@@ -140,7 +130,7 @@ namespace Win01
             {
                 int des;//representa el desplazamiento respecto a la posicion original, para saber exactamento donde se encuentran las 4 fichas
                 //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
-                if (x + 4 <= confi.xDim && checkVertical(x, y, out des))
+                if (x + 4 <= m && checkVertical(x, y, out des))
                 {
                     //lanzar evento partida ganada    
                     //Console.WriteLine("1\t"+des);
@@ -156,7 +146,7 @@ namespace Win01
                     return true;
                 }              
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                else if (!(x < 3 && y <= 2 - x) && !(x - confi.xDim + 3 < 3 && y > confi.xDim + confi.yDim - 5 - x) && checkNoMainDiagonal(x, y, out des))
+                else if (!(x < 3 && y <= 2 - x) && !(x - m + 3 < 3 && y > m + n - 5 - x) && checkNoMainDiagonal(x, y, out des))
                 {
                     //lanzar evento
                     //Console.WriteLine("3\t" + des);
@@ -164,7 +154,7 @@ namespace Win01
                     return true;
                 }
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                else if ( !(x<3 && y>confi.yDim-4+x) && !(y<3 && x>confi.xDim-4+y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
+                else if ( !(x<3 && y>n-4+x) && !(y<3 && x>m-4+y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
                 {
                     //Console.WriteLine("4\t" + des);
                     victoryEvent(x, y, des, FOUR_CONNECT.MAIN);
@@ -252,12 +242,12 @@ namespace Win01
         }
         private bool checkHorizontalRight(int x, int y, int k)
         {
-            int n=1;
-            while (y + n < confi.yDim && A[x, y] == A[x, y + n] && n <= 4 - k)
+            int j=1;
+            while (y + j <n && A[x, y] == A[x, y + j] && j <= 4 - k)
             {
-                n++;
+                j++;
             }
-            return k+n == 5;
+            return k+j == 5;
         }
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya en la diagonal no principal
@@ -270,16 +260,16 @@ namespace Win01
         {
             try
             {
-                int k = 1;
-                while (x + k < confi.xDim && y - k >= 0 && A[x, y] == A[x + k, y - k] && k < 4) { k++;}
-                des = k;
-                if (k == 4)//ya ha habido un un cuatro en raya
+                int i = 1;
+                while (x + i < m && y - i >= 0 && A[x, y] == A[x + i, y - i] && i < 4) { i++;}
+                des = i;
+                if (i == 4)//ya ha habido un un cuatro en raya
                 {
                     return true;
                 }
                 else//toca checkear hacia la derecha
                 {
-                    return checkNonMainDiagonalRight(x, y, k);
+                    return checkNonMainDiagonalRight(x, y, i);
                 }
             }
             catch (Exception ex)
@@ -291,9 +281,9 @@ namespace Win01
         }
         private bool checkNonMainDiagonalRight(int x, int y, int k)
         {
-            int n = 1;
-            while (x - n >= 0 && y + n < confi.yDim && A[x, y] == A[x - n, y + n] && n <= 4 - k) { n++; }
-            return k + n == 5;
+            int i = 1;
+            while (x - i >= 0 && y + i < n && A[x, y] == A[x - i, y + i] && i <= 4 - k) { i++; }
+            return k + i == 5;
         }
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya en la diagonal principal
@@ -327,12 +317,12 @@ namespace Win01
         }
         private bool checkMainDiagonalRight(int x, int y, int k)
         {
-            int n = 1;
-            while (x + n < confi.xDim && y + n < confi.yDim && A[x, y] == A[x + n, y + n] && n <= 4 - k)
+            int i = 1;
+            while (x + i < m && y + i < n && A[x, y] == A[x + i, y + i] && i <= 4 - k)
             {
-                n++;
+                i++;
             }
-            return k + n == 5;
+            return k + i == 5;
         }
         /// <summary>
         /// Metodo para sumar los elementos de un array

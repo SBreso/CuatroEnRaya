@@ -24,7 +24,6 @@ namespace Win01
     {
         #region
         //un flag para saber cuando se ha iniciado una partida
-        //cuando se inicie o finalice la partida habra que cambiar el estado
         private bool flag = true;
         //metodo para cambiar el estado de la bandera
         private void changeFlag()
@@ -49,13 +48,18 @@ namespace Win01
         private enum OPPONENT { HUMAN, PC };//posibles contrincantes
         private OPPONENT opponent;//contrincante
         int Turn { get; set; }//turno de juego
+        LinearGradientBrush brushFill2PlayerOne;
+        LinearGradientBrush brushFill2PlayerTwo;
+        LinearGradientBrush brushStroke2PlayerOne;
+        LinearGradientBrush brushStroke2PlayerTwo;
+        LinearGradientBrush brushFillVictory;
+        LinearGradientBrush brusStrokeVictory;
         #endregion
         /// <summary>
         /// Constructor
         /// </summary>
         public MainWindow()
         {
-            
             List<SolidColorBrush> colorsList = ((Array)FindResource("Colors")).Cast<SolidColorBrush>().ToList();
             List<BitmapImage> iconList = ((Array)FindResource("Icons")).Cast<BitmapImage>().ToList();           
             InitializeComponent();
@@ -72,7 +76,7 @@ namespace Win01
         {
             try
             {
-               this.mainDock.Visibility = Visibility.Hidden;
+                this.mainDock.Visibility = Visibility.Hidden;
             }
             catch (Exception ex)
             {
@@ -136,7 +140,7 @@ namespace Win01
                     {
                         //recibir parametros 
                         confi.playerList = playersWinModal.Players;
-                        //confi= playersWinModal.config;
+                        
                         //mostramos el panel
                         this.playerOne.Content = confi.playerList[0];
                         if (confi.pcOption)//si es contra la maquina, lo creo y lo muestro
@@ -149,14 +153,14 @@ namespace Win01
                             opponent = OPPONENT.HUMAN;
                             this.playerTwo.Content = confi.playerList[1];
                         }
+                        //confi.showPlayersDetail();
                         showTime(confi.isTimer);
                         this.mainDock.Visibility = Visibility.Visible;
                         buildBoard();
-                        motor = new Motor(confi);
+                        motor = new Motor(confi.xDim,confi.yDim);
                         motor.victoryEvent += new Motor.victoryDel(victoryEvent);
                         statuBar.Text = motor.version;
                         motor.run();
-                        //buildBoard(confi.xDim, confi.yDim);
                         changeFlag();
                     }
                     else//si damos a cancelar hay que resetear los jugadores
@@ -171,13 +175,80 @@ namespace Win01
             }
         }
         /// <summary>
+        /// Chequeo para ver si se pueden ver o no los jugadores
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkShowPlayers(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (flag)
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
+        }
+        /// <summary>
+        /// Mostrar, o no, el panel de jugadores
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void showPlayers(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                //Es raro porque esta chequeado de inicio y lo marca como false ????
+                if (gridPlayers.Visibility==Visibility.Visible)
+                {
+                    this.gridPlayers.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    this.gridPlayers.Visibility = Visibility.Visible;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+        /// <summary>
+        /// Para mostrar la barra de tiempo, o no.
+        /// </summary>
+        /// <param name="b"></param>
+        private void showTime(bool b)
+        {
+            try
+            {
+                if (b)
+                {
+                    TimeRectabgle.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    TimeRectabgle.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
+
+        #endregion
+        //parte grafica del juego, creacion del tablero y control de eventos
+        #region
+        /// <summary>
         /// Metodo para construir el tablero del 4 en raya
         /// </summary>
         private void buildBoard()
         {
             try
-            {
-                Turn = 1;
+            {               
+                Turn = 1;//establecemos el turno aqui, asi cuando juego la partida de nuevo, siempre empieza el jugador 1
                 int x = confi.xDim;
                 int y = confi.yDim;
                 //Ellipse[,]
@@ -242,9 +313,11 @@ namespace Win01
                 Grid.SetRow(borderPiece, 0);
                 Grid.SetColumnSpan(borderPiece, y);//colspan del num de columnas
                 table.Children.Add(board);
+                loadStyles();
                 piece = new Ellipse();
-                resetPiece(diametre );
-                piece.Fill = confi.playerList.ElementAt(0).ColorPieza;
+                piece.Fill = brushFill2PlayerOne;
+                piece.Stroke = brushStroke2PlayerOne;
+                resizePiece(diametre);     
                 borderPiece.Child = piece;
                 piece.HorizontalAlignment = HorizontalAlignment.Left;
                 boardProportion = board.Height / board.Width;
@@ -275,16 +348,7 @@ namespace Win01
                     board.Width = board.Height / boardProportion;
                 }
                 resizeSpace(board.Width / confi.yDim - 5);
-                Color c;
-                if (Turn == 1)
-                {
-                    c = confi.playerList.ElementAt(0).ColorPieza.Color;
-                }
-                else
-                {
-                    c = confi.playerList.ElementAt(1).ColorPieza.Color;
-                }
-                resetPiece(board.Width / confi.yDim);
+                resizePiece(board.Width / confi.yDim);
             }
             catch (Exception ex)
             {
@@ -402,6 +466,44 @@ namespace Win01
                 Debugger.WriteException(ex, this);
             }
         }
+
+        private void loadStyles()
+        {
+            try
+            {
+                GradientStopCollection gsc2PlayerOne = new GradientStopCollection(){
+                    new GradientStop(Colors.Black, 0.066),
+                    new GradientStop(confi.playerList.ElementAt(0).ColorPieza.Color,0.581)
+                };
+                GradientStopCollection gsc2PlayerTwo = new GradientStopCollection(){
+                    new GradientStop(Colors.Black, 0.066),
+                    new GradientStop(confi.playerList.ElementAt(1).ColorPieza.Color,0.581)
+                };
+                GradientStopCollection gscVictory = new GradientStopCollection()
+                {
+                    new GradientStop(Colors.Black,0.066),
+                    new GradientStop(Colors.Gold,0.581)
+                };
+                brushFill2PlayerOne = ((LinearGradientBrush)FindResource("linearGradientFill")).Clone();
+                brushFill2PlayerOne.GradientStops = gsc2PlayerOne;
+                brushStroke2PlayerOne = ((LinearGradientBrush)FindResource("linearGradientStroke")).Clone();
+                brushStroke2PlayerOne.GradientStops = gsc2PlayerOne;
+
+                brushFill2PlayerTwo = ((LinearGradientBrush)FindResource("linearGradientFill")).Clone();
+                brushFill2PlayerTwo.GradientStops = gsc2PlayerTwo;
+                brushStroke2PlayerTwo = ((LinearGradientBrush)FindResource("linearGradientStroke")).Clone();
+                brushStroke2PlayerTwo.GradientStops = gsc2PlayerTwo;
+
+                brushFillVictory = ((LinearGradientBrush)FindResource("linearGradientFill")).Clone();
+                brushFillVictory.GradientStops = gscVictory;
+                brusStrokeVictory = ((LinearGradientBrush)FindResource("linearGradientStroke")).Clone();
+                brusStrokeVictory.GradientStops = gscVictory;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
         /// <summary>
         /// Cambiar el jugador que esta en turno y la pieza
         /// </summary>
@@ -412,13 +514,18 @@ namespace Win01
                 if (Turn == 1)
                 {
                     Turn = -1;
-                    piece.Fill = confi.playerList.ElementAt(1).ColorPieza;
+                    //piece.Fill = confi.playerList.ElementAt(1).ColorPieza;
+                    piece.Fill = brushFill2PlayerTwo;
+                    piece.Stroke = brushStroke2PlayerTwo;
                 }
                 else
                 {
                     Turn = 1;
-                    piece.Fill = confi.playerList.ElementAt(0).ColorPieza;
+                    //piece.Fill = confi.playerList.ElementAt(0).ColorPieza;
+                    piece.Fill = brushFill2PlayerOne;
+                    piece.Stroke = brushStroke2PlayerOne;
                 }
+                resizePiece(piece.ActualHeight);
 
             }
             catch (Exception ex)
@@ -427,14 +534,14 @@ namespace Win01
             }
         }        
         /// <summary>
-        /// Asignar tamaño a la ficha del jugador
+        /// Asignar tamaño y color a la ficha del jugador
         /// </summary>
         /// <param name="diametre"></param>
-        private void resetPiece(double diametre)
+        private void resizePiece(double diametre)
         {
             try
-            {
-                piece.StrokeThickness = 10 * diametre / 100;
+            {   
+                piece.StrokeThickness = diametre / 10;
                 piece.Height = diametre;
                 piece.Width = diametre;
             }
@@ -453,6 +560,7 @@ namespace Win01
             {
                 foreach (Ellipse s in space)
                 {
+                    s.StrokeThickness = diametre / 10;
                     s.Height = diametre;
                     s.Width = diametre;
                 }
@@ -473,12 +581,25 @@ namespace Win01
             {
                 if (Turn == 1)
                 {
-                    space[row, colum].Fill = confi.playerList.ElementAt(0).ColorPieza;
+                    space[row, colum].Stroke = brushStroke2PlayerOne;
+                    space[row, colum].Fill = brushFill2PlayerOne;
+                    //brushFill2PlayerTwo.GradientStops = gsc2PlayerOne;
+                    //brushStroke2PlayerTwo.GradientStops = gsc2PlayerOne;
+                    
+                    //space[row, colum].Fill = confi.playerList.ElementAt(0).ColorPieza;
                 }
                 else
                 {
-                    space[row, colum].Fill = confi.playerList.ElementAt(1).ColorPieza;
+                    space[row, colum].Stroke = brushStroke2PlayerTwo;
+                    space[row, colum].Fill = brushFill2PlayerTwo;
+                    //brushFill2PlayerTwo.GradientStops = gsc2PlayerTwo;
+                    //brushStroke2PlayerTwo.GradientStops = gsc2PlayerTwo;
+                    ////space[row, colum].Fill = brushFill;
+                    //space[row, colum].Stroke = brushStroke;
+                    //space[row, colum].Fill = confi.playerList.ElementAt(1).ColorPieza;
                 }
+                //space[row, colum].Fill = brushFill2PlayerTwo;
+                //space[row, colum].Stroke = brushStroke2PlayerTwo;
             }
             catch (Exception ex)
             {
@@ -487,7 +608,7 @@ namespace Win01
         }
         /// <summary>
         /// Este metodo cambia el color de las piezas que consiguen el 4 en raya. Añade una partida ganada al jugador que la ha ganado
-        /// y avisa a la ventana principal para que salte la ventana de victoria
+        /// y muesra la ventana de victoria
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -502,7 +623,8 @@ namespace Win01
                     int k = 0;
                     while (k < 4)
                     {
-                        space[x + k, y].Fill = new SolidColorBrush(Colors.Gold);
+                        space[x + k, y].Fill = brushFillVictory;
+                        space[x + k, y].Stroke = brusStrokeVictory;
                         k++;
                     }
                     //MessageBox.Show("vertical");
@@ -512,7 +634,8 @@ namespace Win01
                     int acc = 0;
                     while (acc < 4)
                     {
-                        space[x, y - (des - 1) + acc].Fill = new SolidColorBrush(Colors.Gold);
+                        space[x, y - (des - 1) + acc].Fill = brushFillVictory;
+                        space[x, y - (des - 1) + acc].Stroke = brusStrokeVictory;
                         acc++;
                     }
                     //MessageBox.Show("horizontal");
@@ -522,7 +645,8 @@ namespace Win01
                     int acc = 0;
                     while (acc < 4)
                     {
-                        space[x + (des - 1) - acc, y - (des - 1) + acc].Fill = new SolidColorBrush(Colors.Gold);
+                        space[x + (des - 1) - acc, y - (des - 1) + acc].Fill = brushFillVictory;
+                        space[x + (des - 1) - acc, y - (des - 1) + acc].Stroke =brusStrokeVictory;
                         acc++;
                     }
                     //MessageBox.Show("nomain");
@@ -532,7 +656,8 @@ namespace Win01
                     int acc = 0;
                     while (acc < 4)
                     {
-                        space[x - (des - 1) + acc, y - (des - 1) + acc].Fill = new SolidColorBrush(Colors.Gold);
+                        space[x - (des - 1) + acc, y - (des - 1) + acc].Fill = brushFillVictory;
+                        space[x - (des - 1) + acc, y - (des - 1) + acc].Stroke = brusStrokeVictory;
                         acc++;
                     }
                     //MessageBox.Show("main");
@@ -554,7 +679,7 @@ namespace Win01
             }
         }
         /// <summary>
-        /// Recibimos el evento de partida ganada
+        /// Ventana de partida ganada
         /// </summary>
         /// <param name="nomPlayer"></param>
         private void showVictoryWin(String nomPlayer)
@@ -572,19 +697,13 @@ namespace Win01
                         motor.run();
                         break;
                     }
-                    case(MessageBoxResult.No):{
+                    default:
+                    {
                         changeFlag();//para poder iniciar una nueva partida
                         motor.mode = Motor.MODE.OFF;
                         confi.resetConfi();//reseteamos la configuracion a los valores por defecto
                         break;
                     }
-                    case (MessageBoxResult.Cancel):
-                        {
-                            changeFlag();//para poder iniciar una nueva partida
-                            motor.mode = Motor.MODE.OFF;
-                            confi.resetConfi();//reseteamos la configuracion a los valores por defecto
-                            break;
-                        }
                 }
             }
             catch (Exception ex)
@@ -597,68 +716,7 @@ namespace Win01
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void checkShowPlayers(object sender, CanExecuteRoutedEventArgs e)
-        {
-            if (flag)
-            {
-                e.CanExecute = false;
-            }
-            else
-            {
-                e.CanExecute = true;
-            }
-        }
-        /// <summary>
-        /// Mostrar, o no, el panel de jugadores
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void showPlayers(object sender, ExecutedRoutedEventArgs e)
-        {
-            try
-            {
-                //Es raro porque esta chequeado de inicio y lo marca como false ????
-                if (!this.itemShowPlayers.IsChecked)
-                {
-                    this.gridPlayers.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    this.gridPlayers.Visibility = Visibility.Visible;
-                }   
-                
-            }
-            catch (Exception ex)
-            {
-                Debugger.WriteException(ex, this);
-            }
-        }
-        /// <summary>
-        /// Para mostrar la barra de tiempo, o no.
-        /// </summary>
-        /// <param name="b"></param>
-        private void showTime(bool b)
-        {
-            try
-            {
-                if (b)
-                {
-                    TimeRectabgle.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    TimeRectabgle.Visibility = Visibility.Collapsed;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debugger.WriteException(ex, this);
-            }
-        }
-       
         #endregion
-
-       
     }
     //Comandos    
     public static class Commands

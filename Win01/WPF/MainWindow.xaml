@@ -15,7 +15,7 @@
                 <Label Content="{Binding Ganadas}" ContentStringFormat="Ganadas: {0}" />
             </StackPanel>
         </DataTemplate>
-        <Style TargetType="{x:Type Ellipse}">
+        <!--<Style TargetType="{x:Type Ellipse}">
             <Setter Property="Fill">
                 <Setter.Value>
                     <LinearGradientBrush x:Name="linearGradientFill" EndPoint="0.5,1" StartPoint="0.5,0">
@@ -44,7 +44,7 @@
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
     </Window.Resources>
     <!--Comandos para shortKeys en Nuevo y Panel Izquierdo-->
     <Window.CommandBindings>
