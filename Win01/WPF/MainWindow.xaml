@@ -15,7 +15,7 @@
                 <Label Content="{Binding Ganadas}" ContentStringFormat="Ganadas: {0}" />
             </StackPanel>
         </DataTemplate>
-        <!--<Style TargetType="{x:Type Ellipse}">
+        <Style TargetType="{x:Type Ellipse}">
             <Setter Property="StrokeThickness" Value="5"/>
             <Setter Property="Fill">
                 <Setter.Value>
@@ -28,8 +28,6 @@
                                 <TranslateTransform/>
                             </TransformGroup>
                         </LinearGradientBrush.RelativeTransform>
-                        <GradientStop Color="Black" Offset="0.066"/>
-                        <GradientStop Color="White" Offset="0.581"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
@@ -44,12 +42,10 @@
                                 <TranslateTransform/>
                             </TransformGroup>
                         </LinearGradientBrush.RelativeTransform>
-                        <GradientStop Color="Black" Offset="0.023"/>
-                        <GradientStop Color="#FFFDFDFD" Offset="0.403"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-        </Style>-->
+        </Style>
     </Window.Resources>
     <!--Comandos para shortKeys en Nuevo y Panel Izquierdo-->
     <Window.CommandBindings>
