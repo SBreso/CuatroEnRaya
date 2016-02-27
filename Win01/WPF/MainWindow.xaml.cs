@@ -466,7 +466,12 @@ namespace Win01
                 Debugger.WriteException(ex, this);
             }
         }
-
+        #endregion
+        //metodos necesarios para el control grafico del juego
+        #region
+        /// <summary>
+        /// Metodo para cargar los diferentes estilos: fill, stroke; para: p1,p2 y victoria 
+        /// </summary>
         private void loadStyles()
         {
             try
@@ -514,14 +519,12 @@ namespace Win01
                 if (Turn == 1)
                 {
                     Turn = -1;
-                    //piece.Fill = confi.playerList.ElementAt(1).ColorPieza;
                     piece.Fill = brushFill2PlayerTwo;
                     piece.Stroke = brushStroke2PlayerTwo;
                 }
                 else
                 {
                     Turn = 1;
-                    //piece.Fill = confi.playerList.ElementAt(0).ColorPieza;
                     piece.Fill = brushFill2PlayerOne;
                     piece.Stroke = brushStroke2PlayerOne;
                 }
@@ -583,23 +586,12 @@ namespace Win01
                 {
                     space[row, colum].Stroke = brushStroke2PlayerOne;
                     space[row, colum].Fill = brushFill2PlayerOne;
-                    //brushFill2PlayerTwo.GradientStops = gsc2PlayerOne;
-                    //brushStroke2PlayerTwo.GradientStops = gsc2PlayerOne;
-                    
-                    //space[row, colum].Fill = confi.playerList.ElementAt(0).ColorPieza;
                 }
                 else
                 {
                     space[row, colum].Stroke = brushStroke2PlayerTwo;
                     space[row, colum].Fill = brushFill2PlayerTwo;
-                    //brushFill2PlayerTwo.GradientStops = gsc2PlayerTwo;
-                    //brushStroke2PlayerTwo.GradientStops = gsc2PlayerTwo;
-                    ////space[row, colum].Fill = brushFill;
-                    //space[row, colum].Stroke = brushStroke;
-                    //space[row, colum].Fill = confi.playerList.ElementAt(1).ColorPieza;
                 }
-                //space[row, colum].Fill = brushFill2PlayerTwo;
-                //space[row, colum].Stroke = brushStroke2PlayerTwo;
             }
             catch (Exception ex)
             {
@@ -618,59 +610,68 @@ namespace Win01
         {
             try
             {
-                if (type == Motor.FOUR_CONNECT.VERTICAL)
+                if (type == Motor.FOUR_CONNECT.NULL)
                 {
-                    int k = 0;
-                    while (k < 4)
-                    {
-                        space[x + k, y].Fill = brushFillVictory;
-                        space[x + k, y].Stroke = brusStrokeVictory;
-                        k++;
-                    }
-                    //MessageBox.Show("vertical");
-                }
-                if (type == Motor.FOUR_CONNECT.HORIZONTAL)
-                {
-                    int acc = 0;
-                    while (acc < 4)
-                    {
-                        space[x, y - (des - 1) + acc].Fill = brushFillVictory;
-                        space[x, y - (des - 1) + acc].Stroke = brusStrokeVictory;
-                        acc++;
-                    }
-                    //MessageBox.Show("horizontal");
-                }
-                if (type == Motor.FOUR_CONNECT.NOMAIN)
-                {
-                    int acc = 0;
-                    while (acc < 4)
-                    {
-                        space[x + (des - 1) - acc, y - (des - 1) + acc].Fill = brushFillVictory;
-                        space[x + (des - 1) - acc, y - (des - 1) + acc].Stroke =brusStrokeVictory;
-                        acc++;
-                    }
-                    //MessageBox.Show("nomain");
-                }
-                if (type == Motor.FOUR_CONNECT.MAIN)
-                {
-                    int acc = 0;
-                    while (acc < 4)
-                    {
-                        space[x - (des - 1) + acc, y - (des - 1) + acc].Fill = brushFillVictory;
-                        space[x - (des - 1) + acc, y - (des - 1) + acc].Stroke = brusStrokeVictory;
-                        acc++;
-                    }
-                    //MessageBox.Show("main");
-                }
-                if (Turn == 1)
-                {
-                    confi.playerList.ElementAt(0).Ganadas += 1;
-                    showVictoryWin(confi.playerList.ElementAt(0).Nombre);
+                    confi.playerList.ElementAt(0).Ganadas += 1/2;
+                    confi.playerList.ElementAt(1).Ganadas += 1/2;
+                    showVictoryWin("", type);
                 }
                 else
                 {
-                    confi.playerList.ElementAt(1).Ganadas += 1;
-                    showVictoryWin(confi.playerList.ElementAt(1).Nombre);
+                    if (type == Motor.FOUR_CONNECT.VERTICAL)
+                    {
+                        int k = 0;
+                        while (k < 4)
+                        {
+                            space[x + k, y].Fill = brushFillVictory;
+                            space[x + k, y].Stroke = brusStrokeVictory;
+                            k++;
+                        }
+                        //MessageBox.Show("vertical");
+                    }
+                    if (type == Motor.FOUR_CONNECT.HORIZONTAL)
+                    {
+                        int acc = 0;
+                        while (acc < 4)
+                        {
+                            space[x, y - (des - 1) + acc].Fill = brushFillVictory;
+                            space[x, y - (des - 1) + acc].Stroke = brusStrokeVictory;
+                            acc++;
+                        }
+                        //MessageBox.Show("horizontal");
+                    }
+                    if (type == Motor.FOUR_CONNECT.NOMAIN)
+                    {
+                        int acc = 0;
+                        while (acc < 4)
+                        {
+                            space[x + (des - 1) - acc, y - (des - 1) + acc].Fill = brushFillVictory;
+                            space[x + (des - 1) - acc, y - (des - 1) + acc].Stroke = brusStrokeVictory;
+                            acc++;
+                        }
+                        //MessageBox.Show("nomain");
+                    }
+                    if (type == Motor.FOUR_CONNECT.MAIN)
+                    {
+                        int acc = 0;
+                        while (acc < 4)
+                        {
+                            space[x - (des - 1) + acc, y - (des - 1) + acc].Fill = brushFillVictory;
+                            space[x - (des - 1) + acc, y - (des - 1) + acc].Stroke = brusStrokeVictory;
+                            acc++;
+                        }
+                        //MessageBox.Show("main");
+                    }
+                    if (Turn == 1)
+                    {
+                        confi.playerList.ElementAt(0).Ganadas += 1;
+                        showVictoryWin(confi.playerList.ElementAt(0).Nombre,type);
+                    }
+                    else
+                    {
+                        confi.playerList.ElementAt(1).Ganadas += 1;
+                        showVictoryWin(confi.playerList.ElementAt(1).Nombre,type);
+                    }
                 }
             }
             catch (Exception ex)
@@ -679,31 +680,42 @@ namespace Win01
             }
         }
         /// <summary>
-        /// Ventana de partida ganada
+        /// Mostrar la ventana de fin de partida
         /// </summary>
         /// <param name="nomPlayer"></param>
-        private void showVictoryWin(String nomPlayer)
+        private void showVictoryWin(String nomPlayer,Motor.FOUR_CONNECT type)
         {
             try
             {
-                String text = String.Format("¡¡Enhorabuena {0}!!\n¿quieres jugar una partida con el mismojugador?",nomPlayer);
-                MessageBoxResult victoryWin = MessageBox.Show(text, "Victoria", MessageBoxButton.YesNo);
+                String text;
+                String caption;
+                if (type != Motor.FOUR_CONNECT.NULL)
+                {
+                    text = String.Format("¡¡Enhorabuena {0}!!", nomPlayer);
+                    caption = "Victoria";
+                }
+                else
+                {
+                    text = "¡¡Partida en tablas!!";
+                    caption = "Empate";
+                }
+                MessageBoxResult victoryWin = MessageBox.Show(text + "\n¿quieres jugar una partida con el mismojugador?", caption, MessageBoxButton.YesNo);
                 switch (victoryWin)
                 {
-                    case(MessageBoxResult.Yes):
-                    {
-                        motor.mode = Motor.MODE.OFF;
-                        buildBoard();
-                        motor.run();
-                        break;
-                    }
+                    case (MessageBoxResult.Yes):
+                        {
+                            motor.mode = Motor.MODE.OFF;
+                            buildBoard();
+                            motor.run();
+                            break;
+                        }
                     default:
-                    {
-                        changeFlag();//para poder iniciar una nueva partida
-                        motor.mode = Motor.MODE.OFF;
-                        confi.resetConfi();//reseteamos la configuracion a los valores por defecto
-                        break;
-                    }
+                        {
+                            changeFlag();//para poder iniciar una nueva partida
+                            motor.mode = Motor.MODE.OFF;
+                            confi.resetConfi();//reseteamos la configuracion a los valores por defecto
+                            break;
+                        }
                 }
             }
             catch (Exception ex)
@@ -712,11 +724,6 @@ namespace Win01
             }
         }
         #endregion
-        private void proof(Object sender, MouseButtonEventArgs args)
-        {
-            motor.fillAToTest(4);
-            MessageBox.Show(motor.checkA(5, 0).ToString());
-        }
     }
     //Comandos    
     public static class Commands

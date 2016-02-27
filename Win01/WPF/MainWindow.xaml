@@ -67,9 +67,6 @@
             <StatusBarItem>
                 <TextBlock Name="statuBar"/>
             </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Text="proof" MouseLeftButtonUp="proof"/>
-            </StatusBarItem>
         </StatusBar>
         <DockPanel Name="mainDock">
             <!--BARRA PARA EL TIEMPO-->

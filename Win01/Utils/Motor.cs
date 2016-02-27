@@ -20,18 +20,20 @@ namespace Win01
         public enum MODE { ON, OFF };
         public MODE mode { get; set; }
         public string version = "v.003";
-        public enum FOUR_CONNECT { VERTICAL, HORIZONTAL, NOMAIN, MAIN };//el tipo de cuatro en raya
+        public enum FOUR_CONNECT { VERTICAL, HORIZONTAL, NOMAIN, MAIN,NULL };//el tipo de cuatro en raya
         public delegate void victoryDel(int x, int y, int des, FOUR_CONNECT type);
         public event victoryDel victoryEvent;
         int[,] A;//matriz de control
         int m;//filas
         int n;//columnas
+        int total;
         #endregion
         public Motor(int xDim, int yDim)
         {
             mode = MODE.OFF;
             m = xDim;
             n = yDim;
+            total = m * n;
             A = new int[m, n];
             
         }
@@ -129,6 +131,12 @@ namespace Win01
         {
             try
             {
+                total--;
+                if (total == 0)
+                {                    
+                    victoryEvent(x, y, 0, FOUR_CONNECT.NULL);
+                    return true;
+                }
                 //return true;
                 int des;//representa el desplazamiento respecto a la posicion original, para saber exactamento donde se encuentran las 4 fichas
                 //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
