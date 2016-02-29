@@ -33,7 +33,6 @@ namespace Win01
             mode = MODE.OFF;
             m = xDim;
             n = yDim;
-            total = m * n;
             A = new int[m, n];
             
         }
@@ -62,6 +61,7 @@ namespace Win01
         /// </summary>
         public void run()
         {
+            total = m * n;
             mode = MODE.ON;
             fillInA();
         }
