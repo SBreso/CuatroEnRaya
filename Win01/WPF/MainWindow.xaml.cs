@@ -132,21 +132,20 @@ namespace Win01
                     playersWinModal.Owner = this;                    
                     //pasar parametros, pasamos los jugadores
                     playersWinModal.PcOption = confi.pcOption;
-                    confi.DefaultGamers();//creamos los jugadores por defecto 1 ó 2
+                    confi.DefaultGamers();//creamos los jugadores por defecto 1 ó 2                   
                     playersWinModal.Players = confi.playerList;
                     //playersWinModal.config = confi;
                     playersWinModal.ShowDialog();
                     if (playersWinModal.DialogResult == true)
                     {
                         //recibir parametros 
-                        confi.playerList = playersWinModal.Players;
-                        
+                        confi.playerList = playersWinModal.Players;                        
                         //mostramos el panel
                         this.playerOne.Content = confi.playerList[0];
                         if (confi.pcOption)//si es contra la maquina, lo creo y lo muestro
                         {
                             opponent = OPPONENT.PC;
-                            this.playerTwo.Content = confi.createPC();                                 
+                            this.playerTwo.Content = confi.createPC();
                         }
                         else//si es contra un amigo, ya lo tengo creado por defecto, y lo muestro
                         {

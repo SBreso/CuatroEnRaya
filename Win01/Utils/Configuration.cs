@@ -7,6 +7,10 @@ namespace Win01
 {
     public class Configuration
     {
+        private int defaultIcon2PlayerOne;
+        private int defaultIcon2PlayerTwo;
+        private int defaultColor2PlayerOne;
+        private int defaultColor2PlaterTwo;
         public bool pcOption;
         public bool isTimer;
         public int xDim;
@@ -29,6 +33,7 @@ namespace Win01
             yDim = 5;
             time = 10;
             playerList = new List<Player>();
+            loadDefaultIconAndColor();
         }
         public void DefaultGamers()
         {
@@ -36,8 +41,8 @@ namespace Win01
             {
                 Player p1 = new Player();
                 p1.Nombre = "Jugador 1";
-                p1.Foto = iconList[0];
-                p1.ColorPieza = colorsList[0];
+                p1.Foto = iconList[defaultIcon2PlayerOne];
+                p1.ColorPieza = colorsList[defaultColor2PlayerOne];
                 playerList.Add(p1);
                 if (pcOption)//vs maquina
                 {
@@ -48,8 +53,8 @@ namespace Win01
                 {
                     Player p2 = new Player();
                     p2.Nombre = "Jugador 2";
-                    p2.Foto = iconList[1];
-                    p2.ColorPieza = colorsList[1];
+                    p2.Foto = iconList[defaultIcon2PlayerTwo];
+                    p2.ColorPieza = colorsList[defaultColor2PlaterTwo];
                     playerList.Add(p2);
                 }
             }
@@ -71,14 +76,34 @@ namespace Win01
             }
         }
 
+        private void loadDefaultIconAndColor()
+        {
+            try
+            {
+                Random r = new Random();
+                defaultIcon2PlayerOne = r.Next(0, iconList.Count-2);//dejamos el ultimo para el pc
+                defaultColor2PlayerOne = defaultIcon2PlayerOne % (colorsList.Count-1);                
+                int m = r.Next(0, iconList.Count);
+                while ( m== defaultIcon2PlayerTwo)
+                {
+                    m=r.Next(0, iconList.Count);
+                }
+                defaultIcon2PlayerTwo = m;
+                defaultColor2PlaterTwo = m % colorsList.Count;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
         public Player createPC()
         {
             try
             {
                 Player pc = new Player();
                 pc.Nombre = "Maquina";
-                pc.Foto = iconList[11];
-                pc.ColorPieza = colorsList[5];                
+                pc.Foto = iconList[iconList.Count-1];
+                pc.ColorPieza = colorsList[colorsList.Count-1];                
                 if (pcOption) { playerList.Add(pc); }
                 return pc;
             }

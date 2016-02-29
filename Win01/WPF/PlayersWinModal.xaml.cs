@@ -32,7 +32,7 @@ namespace Win01
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            tabControl.ItemsSource =players;
+            tabControl.ItemsSource =players;           
             tabControl.SelectedIndex = 0;
             
             //tabControl.GetBindingExpression(Image.SourceProperty).UpdateTarget();
@@ -44,7 +44,32 @@ namespace Win01
         /// <param name="e"></param>
         private void button_click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            List<SolidColorBrush> colorsList = ((Array)FindResource("Colors")).Cast<SolidColorBrush>().ToList();
+            if (!pcOption)
+            {
+                if (players[0].ColorPieza.Equals(players[1].ColorPieza))
+                {
+                    DialogResult = null;
+                    MessageBox.Show("Los colores no pueden coincidir", "¡¡Error!!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    DialogResult = true;
+                }
+            }
+            else
+            {
+                if (players[0].ColorPieza.Equals(colorsList[colorsList.Count - 1]))
+                {
+                    DialogResult = null;
+                    MessageBox.Show("Los colores no pueden coincidir", "¡¡Error!!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    DialogResult = true;
+                }
+            }
+            
         }
         /// <summary>
         /// Cancelar
