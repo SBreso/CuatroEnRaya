@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dictionary;
+using System.Windows.Threading;
 
 namespace Win01
 {
@@ -54,6 +55,8 @@ namespace Win01
         LinearGradientBrush brushStroke2PlayerTwo;
         LinearGradientBrush brushFillVictory;
         LinearGradientBrush brusStrokeVictory;
+        //timer
+        DispatcherTimer turnTime;
         #endregion
         /// <summary>
         /// Constructor
@@ -77,12 +80,29 @@ namespace Win01
             try
             {
                 this.mainDock.Visibility = Visibility.Hidden;
+                turnTime = new DispatcherTimer();
+                turnTime.Interval = TimeSpan.FromSeconds(1);
+                turnTime.Tick += new EventHandler(turnTime_Tick);                
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex,this);
             }
         }
+        private void startTurnTime()
+        {
+            turnTime.Start();
+        }
+        private void stopTurnTime()
+        {
+            turnTime.Stop();
+        }
+        private void resetProgressBar(int max)
+        {
+            progressBar.Maximum=max;
+            progressBar.Value =progressBar.Maximum;        
+        }
+
         //Checks y execute de los comandos
         #region
         /// <summary>
@@ -127,6 +147,7 @@ namespace Win01
                     confi.pcOption = newGame.Oponent;
                     confi.time = newGame.Time;
                     confi.isTimer = newGame.TimeIsChecked;
+                    resetProgressBar(confi.time);
                     //mostramos la de jugadores
                     PlayersWinModal playersWinModal = new PlayersWinModal();
                     playersWinModal.Owner = this;                    
@@ -240,6 +261,17 @@ namespace Win01
         #endregion
         //parte grafica del juego, creacion del tablero y control de eventos
         #region
+        private void turnTime_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                progressBar.Value--;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
+        }
         /// <summary>
         /// Metodo para construir el tablero del 4 en raya
         /// </summary>
@@ -323,6 +355,11 @@ namespace Win01
                 //eventos
                 board.MouseMove += new MouseEventHandler(board_OnMouseMove);
                 board.MouseLeftButtonUp += new MouseButtonEventHandler(board_OnClick);
+                //
+                if (confi.isTimer)
+                {
+                    startTurnTime();
+                }
             }
             catch (Exception ex) { Debugger.WriteException(ex, this); }
         }
@@ -390,7 +427,7 @@ namespace Win01
         private void board_OnClick(object sender, MouseButtonEventArgs e)
         {
             try
-            {
+            {                
                 if (motor.mode == Motor.MODE.ON)
                 {
                     int row;
@@ -419,20 +456,21 @@ namespace Win01
                             }
                             changeTurn();
                             //hasta aqui el turno de la persona. Ahora a la maquina
-                            colum = motor.randomColum();//columna al azar
-                            row = motor.searchNextZero(colum);
-                            while (row == -1)
-                            {
-                                colum = motor.randomColum();
-                                row = motor.searchNextZero(colum);
-                            }
-                            updateBoard(row, colum);
-                            motor.updateA(row, colum, Turn);                            
-                            if (motor.checkA(row, colum))
-                            {
-                                return;
-                            }
-                            changeTurn();
+                            machineTurn();
+                            //colum = motor.randomColum();//columna al azar
+                            //row = motor.searchNextZero(colum);
+                            //while (row == -1)
+                            //{
+                            //    colum = motor.randomColum();
+                            //    row = motor.searchNextZero(colum);
+                            //}
+                            //updateBoard(row, colum);
+                            //motor.updateA(row, colum, Turn);                            
+                            //if (motor.checkA(row, colum))
+                            //{
+                            //    return;
+                            //}
+                            //changeTurn();
                         }
                     }
                     else//con un amigo
@@ -464,6 +502,23 @@ namespace Win01
             {
                 Debugger.WriteException(ex, this);
             }
+        }
+        private void machineTurn()
+        {
+            int colum = motor.randomColum();//columna al azar
+            int row = motor.searchNextZero(colum);
+            while (row == -1)
+            {
+                colum = motor.randomColum();
+                row = motor.searchNextZero(colum);
+            }
+            updateBoard(row, colum);
+            motor.updateA(row, colum, Turn);
+            if (motor.checkA(row, colum))
+            {
+                return;
+            }
+            changeTurn();
         }
         #endregion
         //metodos necesarios para el control grafico del juego
@@ -515,6 +570,8 @@ namespace Win01
         {
             try
             {
+                stopTurnTime();
+                resetProgressBar(confi.time);
                 if (Turn == 1)
                 {
                     Turn = -1;
@@ -528,6 +585,7 @@ namespace Win01
                     piece.Stroke = brushStroke2PlayerOne;
                 }
                 resizePiece(piece.ActualHeight);
+                startTurnTime();
 
             }
             catch (Exception ex)
@@ -609,6 +667,7 @@ namespace Win01
         {
             try
             {
+                stopTurnTime();
                 if (type == Motor.FOUR_CONNECT.NULL)
                 {
                     confi.playerList.ElementAt(0).Ganadas += 1/2;
@@ -723,6 +782,18 @@ namespace Win01
             }
         }
         #endregion
+
+        private void progressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ProgressBar p = (ProgressBar)sender;
+            if (p.Value == 0)
+            {
+                
+                MessageBox.Show("Ha agotado el tiempo del turno", "Tiempo agotado", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                if (confi.pcOption ==true) { machineTurn(); }
+                //changeTurn();
+            }
+        }
     }
     //Comandos    
     public static class Commands

@@ -70,7 +70,16 @@
         </StatusBar>
         <DockPanel Name="mainDock">
             <!--BARRA PARA EL TIEMPO-->
-            <Rectangle x:Name="TimeRectabgle" DockPanel.Dock="Top" Height="50" Fill="#FF2069EA"/>
+            <DockPanel x:Name="TimeRectabgle" DockPanel.Dock="Top" Height="50">
+                <ProgressBar x:Name="progressBar" Maximum="10" SmallChange="0" Value="10" ValueChanged="progressBar_ValueChanged">
+                    <ProgressBar.Foreground>
+                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                            <GradientStop Color="#FF15BF3C" Offset="0.606"/>
+                            <GradientStop Color="#FFC71010" Offset="0.94"/>
+                        </LinearGradientBrush>
+                    </ProgressBar.Foreground>
+                </ProgressBar>
+            </DockPanel>
             <!--GRID PARA LOS JUGADORES-->
             <Grid Name="gridPlayers" DockPanel.Dock="Left" Width="150">
                 <Grid.RowDefinitions>
@@ -84,7 +93,7 @@
             </Grid>
             <!--TABLERO-->
             <Grid x:Name="table">
-               
+
             </Grid>
         </DockPanel>
     </DockPanel>
