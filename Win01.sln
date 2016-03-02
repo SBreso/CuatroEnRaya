@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Win01", "Win01\Win01.csproj", "{7B3EF5F2-9214-4793-9662-15B0472387D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dictionary", "Dictionary\Dictionary.csproj", "{420E5C90-B992-4907-A227-6B9D6ED4667E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckMatrix", "CheckMatrix\CheckMatrix.csproj", "{981974D3-1200-45A3-BE49-EA574B935D13}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B3EF5F2-9214-4793-9662-15B0472387D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B3EF5F2-9214-4793-9662-15B0472387D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B3EF5F2-9214-4793-9662-15B0472387D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B3EF5F2-9214-4793-9662-15B0472387D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{420E5C90-B992-4907-A227-6B9D6ED4667E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{420E5C90-B992-4907-A227-6B9D6ED4667E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{420E5C90-B992-4907-A227-6B9D6ED4667E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{420E5C90-B992-4907-A227-6B9D6ED4667E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{981974D3-1200-45A3-BE49-EA574B935D13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{981974D3-1200-45A3-BE49-EA574B935D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{981974D3-1200-45A3-BE49-EA574B935D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{981974D3-1200-45A3-BE49-EA574B935D13}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
