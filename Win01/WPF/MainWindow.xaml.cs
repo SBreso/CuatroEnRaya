@@ -153,6 +153,7 @@ namespace Win01
                     confi.pcOption = newGame.Oponent;
                     confi.time = newGame.Time;
                     confi.isTimer = newGame.TimeIsChecked;
+                    //configuramos la progressBar
                     resetProgressBar(confi.time);
                     //mostramos la de jugadores
                     PlayersWinModal playersWinModal = new PlayersWinModal();
@@ -186,6 +187,7 @@ namespace Win01
                         motor = new Motor(confi.xDim,confi.yDim);
                         motor.victoryEvent += new Motor.victoryDel(victoryEvent);
                         statuBar.Text = motor.version;
+                        motor.Objective = 4;
                         motor.run();
                         changeFlag();
                     }
@@ -692,7 +694,7 @@ namespace Win01
                     if (type == Motor.FOUR_CONNECT.VERTICAL)
                     {
                         int k = 0;
-                        while (k < 4)
+                        while (k < motor.Objective)
                         {
                             space[x + k, y].Fill = brushFillVictory;
                             space[x + k, y].Stroke = brusStrokeVictory;
@@ -703,7 +705,7 @@ namespace Win01
                     if (type == Motor.FOUR_CONNECT.HORIZONTAL)
                     {
                         int acc = 0;
-                        while (acc < 4)
+                        while (acc < motor.Objective)
                         {
                             space[x, y - (des - 1) + acc].Fill = brushFillVictory;
                             space[x, y - (des - 1) + acc].Stroke = brusStrokeVictory;
@@ -714,7 +716,7 @@ namespace Win01
                     if (type == Motor.FOUR_CONNECT.NOMAIN)
                     {
                         int acc = 0;
-                        while (acc < 4)
+                        while (acc < motor.Objective)
                         {
                             space[x + (des - 1) - acc, y - (des - 1) + acc].Fill = brushFillVictory;
                             space[x + (des - 1) - acc, y - (des - 1) + acc].Stroke = brusStrokeVictory;
@@ -725,7 +727,7 @@ namespace Win01
                     if (type == Motor.FOUR_CONNECT.MAIN)
                     {
                         int acc = 0;
-                        while (acc < 4)
+                        while (acc < motor.Objective)
                         {
                             space[x - (des - 1) + acc, y - (des - 1) + acc].Fill = brushFillVictory;
                             space[x - (des - 1) + acc, y - (des - 1) + acc].Stroke = brusStrokeVictory;

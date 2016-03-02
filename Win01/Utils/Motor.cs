@@ -1,15 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using Dictionary;
 
 namespace Win01
 {
@@ -19,14 +8,15 @@ namespace Win01
         #region
         public enum MODE { ON, OFF };
         public MODE mode { get; set; }
-        public string version = "v.003";
+        public string version = "v.004";
         public enum FOUR_CONNECT { VERTICAL, HORIZONTAL, NOMAIN, MAIN,NULL };//el tipo de cuatro en raya
         public delegate void victoryDel(int x, int y, int des, FOUR_CONNECT type);
         public event victoryDel victoryEvent;
         int[,] A;//matriz de control
         int m;//filas
         int n;//columnas
-        int total;
+        int total;//para controlar el empate
+        public int Objective { get; set; }//objetivo, para poder jugar a mas opciones
         #endregion
         public Motor(int xDim, int yDim)
         {
@@ -140,7 +130,7 @@ namespace Win01
                 //return true;
                 int des;//representa el desplazamiento respecto a la posicion original, para saber exactamento donde se encuentran las 4 fichas
                 //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
-                if (x + 3 < m && checkVertical(x, y, out des))
+                if (x + (Objective-1) < m && checkVertical(x, y, out des))
                 {
                     //lanzar evento partida ganada    
                     //Console.WriteLine("1\t"+des);
@@ -156,7 +146,7 @@ namespace Win01
                     return true;
                 }
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                else if (!(x < 3 && y <= 2 - x) && !(x - m + 3 < 3 && y > m + n - 5 - x) && checkNoMainDiagonal(x, y, out des))
+                else if (!(x < Objective-1 && y <Objective-1) && !(x>m-(Objective-1) && y > n-(Objective-1)) && checkNoMainDiagonal(x, y, out des))
                 {
                     //lanzar evento
                     //Console.WriteLine("3\t" + des);
@@ -193,12 +183,12 @@ namespace Win01
             try
             {
                 int i = 1;
-                while (i < 4 && A[x, y] == A[x + i, y])
+                while (i < Objective && A[x, y] == A[x + i, y])
                 {
                     i++;
                 }
                 des = i - 1;
-                return i == 4;
+                return i == Objective;
             }
             catch (Exception ex)
             {
@@ -222,7 +212,7 @@ namespace Win01
                 //compruevo que existe el elemento A[x,y-k]
                 //compruevo que no me voy mas alla del cuatro en raya
                 //compruevo que los elementos coinciden
-                while (y - k >= 0 && k < 4 && A[x, y] == A[x, y - k])
+                while (y - k >= 0 && k < Objective && A[x, y] == A[x, y - k])
                 {
                     k++;
                 }
@@ -233,7 +223,7 @@ namespace Win01
                  *si k=3 comprobacion hacia la derecha de un elemento
                  *si k=4 ha habido un cuatro en raya
                  */
-                if (k == 4)
+                if (k == Objective)
                 {
                     return true;
                 }
@@ -252,11 +242,11 @@ namespace Win01
         private bool checkHorizontalRight(int x, int y, int k)
         {
             int j = 1;
-            while (y + j < n && A[x, y] == A[x, y + j] && j <= 4 - k)
+            while (y + j < n && A[x, y] == A[x, y + j] && j <= Objective - k)
             {
                 j++;
             }
-            return k + j == 5;
+            return k + j == Objective+1;
         }
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya en la diagonal no principal
@@ -270,9 +260,9 @@ namespace Win01
             try
             {
                 int i = 1;
-                while (x + i < m && y - i >= 0 && A[x, y] == A[x + i, y - i] && i < 4) { i++; }
+                while (x + i < m && y - i >= 0 && A[x, y] == A[x + i, y - i] && i < Objective) { i++; }
                 des = i;
-                if (i == 4)//ya ha habido un un cuatro en raya
+                if (i == Objective)//ya ha habido un un cuatro en raya
                 {
                     return true;
                 }
@@ -291,8 +281,8 @@ namespace Win01
         private bool checkNonMainDiagonalRight(int x, int y, int k)
         {
             int i = 1;
-            while (x - i >= 0 && y + i < n && A[x, y] == A[x - i, y + i] && i <= 4 - k) { i++; }
-            return k + i == 5;
+            while (x - i >= 0 && y + i < n && A[x, y] == A[x - i, y + i] && i <= Objective - k) { i++; }
+            return k + i == Objective+1;
         }
         /// <summary>
         /// Devuelve true si se ha producido un 4 en raya en la diagonal principal
@@ -306,9 +296,9 @@ namespace Win01
             try
             {
                 int k = 1;
-                while (x - k >= 0 && y - k >= 0 && A[x, y] == A[x - k, y - k] && k < 4) { k++; }
+                while (x - k >= 0 && y - k >= 0 && A[x, y] == A[x - k, y - k] && k < Objective) { k++; }
                 des = k;
-                if (k == 4)//ya ha habido un cuatro en raya
+                if (k == Objective)//ya ha habido un cuatro en raya
                 {
                     return true;
                 }
@@ -327,11 +317,11 @@ namespace Win01
         private bool checkMainDiagonalRight(int x, int y, int k)
         {
             int i = 1;
-            while (x + i < m && y + i < n && A[x, y] == A[x + i, y + i] && i <= 4 - k)
+            while (x + i < m && y + i < n && A[x, y] == A[x + i, y + i] && i <= Objective - k)
             {
                 i++;
             }
-            return k + i == 5;
+            return k + i == Objective+1;
         }
 
         private void showA()
