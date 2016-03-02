@@ -91,7 +91,10 @@ namespace Win01
         }
         private void startTurnTime()
         {
-            turnTime.Start();
+            if (confi.isTimer)
+            {
+                turnTime.Start();
+            }
         }
         private void stopTurnTime()
         {
@@ -99,8 +102,11 @@ namespace Win01
         }
         private void resetProgressBar(int max)
         {
-            progressBar.Maximum=max;
-            progressBar.Value =progressBar.Maximum;        
+            if (confi.isTimer)
+            {
+                progressBar.Maximum = max;
+                progressBar.Value = progressBar.Maximum;
+            }
         }
 
         //Checks y execute de los comandos
@@ -261,6 +267,11 @@ namespace Win01
         #endregion
         //parte grafica del juego, creacion del tablero y control de eventos
         #region
+            /// <summary>
+            /// Manejador del evento tick, para controlar el tiempo de turno
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
         private void turnTime_Tick(object sender, EventArgs e)
         {
             try
@@ -450,27 +461,15 @@ namespace Win01
                         {                            
                             updateBoard(row, colum);//actualizamos tablero
                             motor.updateA(row, colum,Turn);//actualizamos matriz
+                            confi.playerList[0].TiempoAcumulado = 10 - (int)progressBar.Value;
+                            confi.playerList[0].TiempoAcumuladoTotal = 10 - (int)progressBar.Value;
                             if (motor.checkA(row, colum))//comprobamos si ha habido un cuatro en raya
                             {
                                 return;
-                            }
-                            changeTurn();
+                            }                            
+                            changeTurn();                           
                             //hasta aqui el turno de la persona. Ahora a la maquina
                             machineTurn();
-                            //colum = motor.randomColum();//columna al azar
-                            //row = motor.searchNextZero(colum);
-                            //while (row == -1)
-                            //{
-                            //    colum = motor.randomColum();
-                            //    row = motor.searchNextZero(colum);
-                            //}
-                            //updateBoard(row, colum);
-                            //motor.updateA(row, colum, Turn);                            
-                            //if (motor.checkA(row, colum))
-                            //{
-                            //    return;
-                            //}
-                            //changeTurn();
                         }
                     }
                     else//con un amigo
@@ -489,6 +488,16 @@ namespace Win01
                         {
                             motor.updateA(row, colum, Turn);
                             updateBoard(row, colum);
+                            if (Turn == 1)
+                            {
+                                confi.playerList[0].TiempoAcumulado = 10 - (int)progressBar.Value;
+                                confi.playerList[0].TiempoAcumuladoTotal = 10 - (int)progressBar.Value;
+                            }
+                            else
+                            {
+                                confi.playerList[1].TiempoAcumulado = 10 - (int)progressBar.Value;
+                                confi.playerList[1].TiempoAcumuladoTotal = 10 - (int)progressBar.Value;
+                            }
                             if (motor.checkA(row, colum))
                             {
                                 return;
@@ -505,6 +514,7 @@ namespace Win01
         }
         private void machineTurn()
         {
+            Random r = new Random();
             int colum = motor.randomColum();//columna al azar
             int row = motor.searchNextZero(colum);
             while (row == -1)
@@ -513,6 +523,9 @@ namespace Win01
                 row = motor.searchNextZero(colum);
             }
             updateBoard(row, colum);
+            int n=r.Next(3, 9);
+            confi.playerList[1].TiempoAcumulado = n;
+            confi.playerList[1].TiempoAcumuladoTotal = n;
             motor.updateA(row, colum, Turn);
             if (motor.checkA(row, colum))
             {
@@ -764,6 +777,9 @@ namespace Win01
                         {
                             motor.mode = Motor.MODE.OFF;
                             buildBoard();
+                            confi.playerList[0].ResetTiempo();
+                            confi.playerList[1].ResetTiempo();
+                            resetProgressBar(confi.time);
                             motor.run();
                             break;
                         }
@@ -790,7 +806,15 @@ namespace Win01
             {
                 
                 MessageBox.Show("Ha agotado el tiempo del turno", "Tiempo agotado", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                if (confi.pcOption ==true) { machineTurn(); }
+                if (confi.pcOption ==true)
+                {
+                    changeTurn();
+                    machineTurn();
+                }
+                else
+                {
+                    changeTurn();
+                }
                 //changeTurn();
             }
         }

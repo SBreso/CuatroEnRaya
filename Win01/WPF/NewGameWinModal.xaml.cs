@@ -112,6 +112,8 @@ namespace Win01
                 TimeIsChecked = (bool)this.checkTime.IsChecked;
                 Oponent = whatOponent();
                 DialogResult = true;
+                //si el tiempo es cero, es como si no se chequeara
+                if (Time == 0) { TimeIsChecked = false; }
             }
             catch (Exception ex)
             {
