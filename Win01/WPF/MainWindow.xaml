@@ -71,13 +71,14 @@
         <DockPanel Name="mainDock">
             <!--BARRA PARA EL TIEMPO-->
             <DockPanel x:Name="TimeRectabgle" DockPanel.Dock="Top" Height="50">
-                <ProgressBar x:Name="progressBar" Maximum="10" SmallChange="0" Value="10" ValueChanged="progressBar_ValueChanged">
-                    <ProgressBar.Foreground>
-                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                            <GradientStop Color="#FF15BF3C" Offset="0.606"/>
-                            <GradientStop Color="#FFC71010" Offset="0.94"/>
+                <ProgressBar x:Name="progressBar" Maximum="10" SmallChange="0" Value="10" ValueChanged="progressBar_ValueChanged" Foreground="#FF195CD1">
+                    <ProgressBar.Background>
+                        <LinearGradientBrush EndPoint="1,0" StartPoint="0,0">
+                            <GradientStop Color="#FF31BD1B" Offset="0.35"/>
+                            <GradientStop Color="#FFEE0909" Offset="0.076"/>
                         </LinearGradientBrush>
-                    </ProgressBar.Foreground>
+                    </ProgressBar.Background>
+
                 </ProgressBar>
             </DockPanel>
             <!--GRID PARA LOS JUGADORES-->

@@ -187,7 +187,7 @@ namespace Win01
                         motor = new Motor(confi.xDim,confi.yDim);
                         motor.victoryEvent += new Motor.victoryDel(victoryEvent);
                         statuBar.Text = motor.version;
-                        motor.Objective = 4;
+                        motor.Objective = 6;
                         motor.run();
                         changeFlag();
                     }

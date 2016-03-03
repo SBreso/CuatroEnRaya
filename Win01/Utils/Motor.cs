@@ -146,7 +146,7 @@ namespace Win01
                     return true;
                 }
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                else if (!(x < Objective-1 && y <Objective-1) && !(x>m-(Objective-1) && y > n-(Objective-1)) && checkNoMainDiagonal(x, y, out des))
+                else if (!(x < Objective && y <Objective-x) && !(x>=m-(Objective-1) && y >= n-(x-m+Objective)) && checkNoMainDiagonal(x, y, out des))
                 {
                     //lanzar evento
                     //Console.WriteLine("3\t" + des);

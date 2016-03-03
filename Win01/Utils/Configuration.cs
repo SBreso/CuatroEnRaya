@@ -28,9 +28,9 @@ namespace Win01
 
         public void resetConfi()
         {            
-            pcOption = true;
-            xDim = 6;
-            yDim = 5;
+            pcOption = false;
+            xDim = 10;
+            yDim = 10;
             time = 10;
             playerList = new List<Player>();
             loadDefaultIconAndColor();
