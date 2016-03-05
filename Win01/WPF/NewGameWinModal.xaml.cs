@@ -26,11 +26,13 @@ namespace Win01
         public int X { get { return x; } set { x = value; } }
         public int Y { get { return y; } set { y = value; } }
         public int Time { get{return time;} set{time=value;} }
+        public int Objective { get { return objective; } set { objective = value; } }
         private bool oponent;//true-->maquina & false-->2 players
         private bool timeIsChecked;
         private int x;
         private int y;
         private int time;
+        private int objective;
         #endregion
         public NewGameWinModal()
         {
@@ -42,8 +44,10 @@ namespace Win01
             {
                 this.textX.Text = x.ToString();
                 this.textY.Text = y.ToString();
+                this.textObjective.Text = objective.ToString();
                 checkOponent(this.oponent);
                 this.sliderTime.Value = time;
+                this.textBlockTime.Text = ((int)sliderTime.Value).ToString();
             }
             catch (Exception ex)
             {
@@ -114,6 +118,12 @@ namespace Win01
                 DialogResult = true;
                 //si el tiempo es cero, es como si no se chequeara
                 if (Time == 0) { TimeIsChecked = false; }
+                int min = Math.Min(x, y);
+                Objective = Int32.Parse(this.textObjective.Text);
+                if (Objective > min)
+                {
+                    Objective = min;
+                }
             }
             catch (Exception ex)
             {

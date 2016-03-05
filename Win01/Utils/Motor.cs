@@ -9,8 +9,8 @@ namespace Win01
         public enum MODE { ON, OFF };
         public MODE mode { get; set; }
         public string version = "v.004";
-        public enum FOUR_CONNECT { VERTICAL, HORIZONTAL, NOMAIN, MAIN,NULL };//el tipo de cuatro en raya
-        public delegate void victoryDel(int x, int y, int des, FOUR_CONNECT type);
+        public enum CONNECT { VERTICAL, HORIZONTAL, NOMAIN, MAIN,NULL };//el tipo de cuatro en raya
+        public delegate void victoryDel(int x, int y, int des, CONNECT type);
         public event victoryDel victoryEvent;
         int[,] A;//matriz de control
         int m;//filas
@@ -121,20 +121,14 @@ namespace Win01
         {
             try
             {
-                total--;
-                if (total == 0)
-                {                    
-                    victoryEvent(x, y, 0, FOUR_CONNECT.NULL);
-                    return true;
-                }
-                //return true;
+                total--;        
                 int des;//representa el desplazamiento respecto a la posicion original, para saber exactamento donde se encuentran las 4 fichas
                 //hasta que no haya llegado al nivel, no hace falta hacer esta comprobacion
                 if (x + (Objective-1) < m && checkVertical(x, y, out des))
                 {
                     //lanzar evento partida ganada    
                     //Console.WriteLine("1\t"+des);
-                    victoryEvent(x, y, des, FOUR_CONNECT.VERTICAL);
+                    victoryEvent(x, y, des, CONNECT.VERTICAL);
                     return true;
                 }
                 //esta hay que hacerla 'siempre'               
@@ -142,25 +136,29 @@ namespace Win01
                 {
                     //lanzar evento partida ganada con el desplazamiento
                     //Console.WriteLine("2\t" + des);
-                    victoryEvent(x, y, des, FOUR_CONNECT.HORIZONTAL);
+                    victoryEvent(x, y, des, CONNECT.HORIZONTAL);
                     return true;
                 }
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                else if (!(x < Objective && y <Objective-x) && !(x>=m-(Objective-1) && y >= n-(x-m+Objective)) && checkNoMainDiagonal(x, y, out des))
+                else if (!(x <= Objective-2 && y <=Objective-2-x) && !(x>=m-(Objective-1) && y >= n-(x-m+Objective)) && checkNoMainDiagonal(x, y, out des))
                 {
                     //lanzar evento
                     //Console.WriteLine("3\t" + des);
-                    victoryEvent(x, y, des, FOUR_CONNECT.NOMAIN);
+                    victoryEvent(x, y, des, CONNECT.NOMAIN);
                     return true;
                 }
                 //no hace falta que haga la comprobacion si esta en las esquinas
-                else if (!(x < 3 && y > n - 4 + x) && !(y < 3 && x > m - 4 + y) && checkMainDiagonal(x, y, out des))//!(x<3 && y<confi.yDim-3+x) && !(y<3 && x<confi.xDim-3+y) &&)
+                else if ( !(x<=Objective-1 && y>=n-Objective+1+x) && !(x>=m-Objective+1 && y<=x-m+Objective-1) && checkMainDiagonal(x, y, out des))
                 {
                     //Console.WriteLine("4\t" + des);
-                    victoryEvent(x, y, des, FOUR_CONNECT.MAIN);
+                    victoryEvent(x, y, des, CONNECT.MAIN);
                     return true;
                 }
-                else
+                else if (total == 0)
+                {
+                    victoryEvent(x, y, 0, CONNECT.NULL);
+                    return true;
+                }else
                 {
                     return false;
                 }

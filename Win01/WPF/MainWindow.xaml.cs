@@ -144,6 +144,7 @@ namespace Win01
                 newGame.X = confi.xDim;
                 newGame.Y = confi.yDim;
                 newGame.Time = confi.time;
+                newGame.Objective = confi.Objective;
                 newGame.ShowDialog();
                 if (newGame.DialogResult == true)
                 {
@@ -153,6 +154,7 @@ namespace Win01
                     confi.pcOption = newGame.Oponent;
                     confi.time = newGame.Time;
                     confi.isTimer = newGame.TimeIsChecked;
+                    confi.Objective = newGame.Objective;
                     //configuramos la progressBar
                     resetProgressBar(confi.time);
                     //mostramos la de jugadores
@@ -187,7 +189,7 @@ namespace Win01
                         motor = new Motor(confi.xDim,confi.yDim);
                         motor.victoryEvent += new Motor.victoryDel(victoryEvent);
                         statuBar.Text = motor.version;
-                        motor.Objective = 6;
+                        motor.Objective = confi.Objective;
                         motor.run();
                         changeFlag();
                     }
@@ -463,8 +465,8 @@ namespace Win01
                         {                            
                             updateBoard(row, colum);//actualizamos tablero
                             motor.updateA(row, colum,Turn);//actualizamos matriz
-                            confi.playerList[0].TiempoAcumulado = 10 - (int)progressBar.Value;
-                            confi.playerList[0].TiempoAcumuladoTotal = 10 - (int)progressBar.Value;
+                            confi.playerList[0].TiempoAcumulado = (int)(progressBar.Maximum - progressBar.Value);
+                            confi.playerList[0].TiempoAcumuladoTotal =(int)(progressBar.Maximum - progressBar.Value);
                             if (motor.checkA(row, colum))//comprobamos si ha habido un cuatro en raya
                             {
                                 return;
@@ -492,13 +494,13 @@ namespace Win01
                             updateBoard(row, colum);
                             if (Turn == 1)
                             {
-                                confi.playerList[0].TiempoAcumulado = 10 - (int)progressBar.Value;
-                                confi.playerList[0].TiempoAcumuladoTotal = 10 - (int)progressBar.Value;
+                                confi.playerList[0].TiempoAcumulado = (int)(progressBar.Maximum - progressBar.Value);
+                                confi.playerList[0].TiempoAcumuladoTotal = (int)(progressBar.Maximum - progressBar.Value);
                             }
                             else
                             {
-                                confi.playerList[1].TiempoAcumulado = 10 - (int)progressBar.Value;
-                                confi.playerList[1].TiempoAcumuladoTotal = 10 - (int)progressBar.Value;
+                                confi.playerList[1].TiempoAcumulado = (int)(progressBar.Maximum - progressBar.Value);
+                                confi.playerList[1].TiempoAcumuladoTotal = (int)(progressBar.Maximum - progressBar.Value);
                             }
                             if (motor.checkA(row, colum))
                             {
@@ -525,7 +527,7 @@ namespace Win01
                 row = motor.searchNextZero(colum);
             }
             updateBoard(row, colum);
-            int n=r.Next(3, 9);
+            int n=r.Next(3, (int)progressBar.Maximum);
             confi.playerList[1].TiempoAcumulado = n;
             confi.playerList[1].TiempoAcumuladoTotal = n;
             motor.updateA(row, colum, Turn);
@@ -601,7 +603,6 @@ namespace Win01
                 }
                 resizePiece(piece.ActualHeight);
                 startTurnTime();
-
             }
             catch (Exception ex)
             {
@@ -678,12 +679,12 @@ namespace Win01
         /// <param name="y"></param>
         /// <param name="des"></param>
         /// <param name="type"></param>
-        private void victoryEvent(int x, int y, int des, Motor.FOUR_CONNECT type)
+        private void victoryEvent(int x, int y, int des, Motor.CONNECT type)
         {
             try
             {
                 stopTurnTime();
-                if (type == Motor.FOUR_CONNECT.NULL)
+                if (type == Motor.CONNECT.NULL)
                 {
                     confi.playerList.ElementAt(0).Ganadas += 1/2;
                     confi.playerList.ElementAt(1).Ganadas += 1/2;
@@ -691,7 +692,7 @@ namespace Win01
                 }
                 else
                 {
-                    if (type == Motor.FOUR_CONNECT.VERTICAL)
+                    if (type == Motor.CONNECT.VERTICAL)
                     {
                         int k = 0;
                         while (k < motor.Objective)
@@ -702,7 +703,7 @@ namespace Win01
                         }
                         //MessageBox.Show("vertical");
                     }
-                    if (type == Motor.FOUR_CONNECT.HORIZONTAL)
+                    if (type == Motor.CONNECT.HORIZONTAL)
                     {
                         int acc = 0;
                         while (acc < motor.Objective)
@@ -713,7 +714,7 @@ namespace Win01
                         }
                         //MessageBox.Show("horizontal");
                     }
-                    if (type == Motor.FOUR_CONNECT.NOMAIN)
+                    if (type == Motor.CONNECT.NOMAIN)
                     {
                         int acc = 0;
                         while (acc < motor.Objective)
@@ -724,7 +725,7 @@ namespace Win01
                         }
                         //MessageBox.Show("nomain");
                     }
-                    if (type == Motor.FOUR_CONNECT.MAIN)
+                    if (type == Motor.CONNECT.MAIN)
                     {
                         int acc = 0;
                         while (acc < motor.Objective)
@@ -756,13 +757,13 @@ namespace Win01
         /// Mostrar la ventana de fin de partida
         /// </summary>
         /// <param name="nomPlayer"></param>
-        private void showVictoryWin(String nomPlayer,Motor.FOUR_CONNECT type)
+        private void showVictoryWin(String nomPlayer,Motor.CONNECT type)
         {
             try
             {
                 String text;
                 String caption;
-                if (type != Motor.FOUR_CONNECT.NULL)
+                if (type != Motor.CONNECT.NULL)
                 {
                     text = String.Format("¡¡Enhorabuena {0}!!", nomPlayer);
                     caption = "Victoria";
@@ -782,6 +783,7 @@ namespace Win01
                             confi.playerList[0].ResetTiempo();
                             confi.playerList[1].ResetTiempo();
                             resetProgressBar(confi.time);
+                            motor.Objective = confi.Objective;
                             motor.run();
                             break;
                         }

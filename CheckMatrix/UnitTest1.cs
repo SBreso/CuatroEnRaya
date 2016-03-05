@@ -55,6 +55,6 @@ namespace CheckMatrix
             Assert.AreEqual(true, b);
         }
 
-        public void test(int x, int y, int des, Motor.FOUR_CONNECT type) { }
+        public void test(int x, int y, int des, Motor.CONNECT type) { }
     }
 }

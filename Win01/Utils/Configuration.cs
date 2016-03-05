@@ -16,6 +16,7 @@ namespace Win01
         public int xDim;
         public int yDim;
         public int time;
+        public int Objective;
         public List<Player> playerList;
         public List<SolidColorBrush> colorsList;
         public List<BitmapImage> iconList;
@@ -29,9 +30,10 @@ namespace Win01
         public void resetConfi()
         {            
             pcOption = false;
-            xDim = 10;
-            yDim = 10;
-            time = 10;
+            xDim = 6;
+            yDim = 6;
+            time = 0;
+            Objective = 6;
             playerList = new List<Player>();
             loadDefaultIconAndColor();
         }
