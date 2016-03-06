@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 
 namespace Win01
 {
@@ -17,6 +18,7 @@ namespace Win01
         int n;//columnas
         int total;//para controlar el empate
         public int Objective { get; set; }//objetivo, para poder jugar a mas opciones
+        public int Level { get; set; }//nivel de deteccion
         #endregion
         public Motor(int xDim, int yDim)
         {
@@ -321,18 +323,8 @@ namespace Win01
             }
             return k + i == Objective+1;
         }
-
-        private void showA()
-        {
-            for (int i = 0; i < m; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    Console.Write(A[i, j] + " ");
-                }
-                Console.WriteLine();
-            }
-        }
+        //Metodos para las pruebas
+        #region
         private void fillADifferent()
         {
             int k = 0;
@@ -387,7 +379,355 @@ namespace Win01
                         break;
                     }
             }
-            showA();
+        }
+        #endregion
+        public bool search4K(int x, int y,out int possibleColumn)
+        {
+            try
+            {
+                //int k = Objective - nivel;//Segun el nivel, putearemos mas o menos
+                //chequeo vertical
+                if(x<=m-Level && search4KVertical(x,y,out possibleColumn))
+                {
+                    Debugger.Write("Vertical: "+possibleColumn);
+                    return true;
+                }//chequeo horizontal
+                else if (search4KHorizontal(x, y,out possibleColumn) )
+                {
+                    Debugger.Write("Horizontal 1:"+possibleColumn + "");
+                    return true;
+                }//hacemos una comprobacion horizontal en la fila superior, para taparlo
+                else if (x - 1 >= 0 && search4KHorizontal(x - 1, y,out possibleColumn))
+                {
+                    Debugger.Write("Horizontal 2:" + possibleColumn + "");
+                    return true;
+                }//chequeo diagonalNoMain
+                else if (!(x <= Objective - 2 && y <= Objective - 2 - x) && !(x >= m - (Objective - 1) && y >= n - (x - m + Objective))&& search4KNoMain(x, y,out possibleColumn))
+                {
+                    Debugger.Write("NoMain 1: "+possibleColumn + "");
+                    return true;
+                }//chequeo diagonalNoMain sobre la posicion superior
+                else if (x - 1 >= 0 && !(x - 1 <= Objective - 2 && y <= Objective - 2 - x - 1) && !(x - 1 >= m - (Objective - 1) && y >= n - (x - 1 - m + Objective)) && search4KNoMain(x - 1, y, out possibleColumn))
+                {
+                    Debugger.Write("NoMain 2: "+possibleColumn + "");
+                    return true;
+                }//chequeo diagonalMain
+                else if (!(x <= Objective - 1 && y >= n - Objective + 1 + x) && !(x >= m - Objective + 1 && y <= x - m + Objective - 1) && search4KMain(x, y,out possibleColumn))
+                {
+                    Debugger.Write("Main 1: "+possibleColumn + "");
+                    return true;
+                }//chequeo diagonalMain sobre la posicion superior
+                else if (x - 1 >= 0 && !(x - 1 <= Objective - 1 && y >= n - Objective + 1 + x - 1) && !(x - 1 >= m - Objective + 1 && y <= x - 1 - m + Objective - 1) && search4KMain(x - 1, y, out possibleColumn))
+                {
+                    Debugger.Write("Main 2: "+possibleColumn + "");
+                    return true;
+                }
+                else
+                {
+                    Debugger.Write(possibleColumn + "");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                possibleColumn = -1;
+                return false;
+            }
+        }
+        /// <summary>
+        /// En busca de k posiciones iguales de forma vertical
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="Level"></param>
+        /// <returns></returns>
+        private bool search4KVertical(int x, int y, out int possibleColumn)
+        {
+            try
+            {
+                int i = 1;
+                while(i<Level && x+i<m && A[x, y] == A[x + i, y])
+                {
+                    i++;
+                }
+                possibleColumn = y;
+                return i == Level;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                possibleColumn = -1;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Metodo para buscar posibles jugadas del usuario para putear
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="Level"></param>
+        /// <returns></returns>
+        private bool search4KHorizontal(int x, int y, out int possibleColumn)
+        {
+            //si encuentra una columna donde colocar la ficha la devuelve, si no devuelve -1
+            try
+            {
+                possibleColumn = -1;
+                int[] v = new int[Objective];
+                int j = 0;
+                int pos = y - (Objective - 1) + j;                
+                while(j<Objective && pos+Objective<n)
+                {
+                    pos = y - (Objective - 1) + j;
+                    if (pos<0)//la posicion desde donde quiero comprobar esta cerca del borde izq
+                    {
+                        pos = y - (Objective - 1) + j;
+                        j++;
+                    }
+                    else
+                    {
+                        v = buildArrayFromA(new Point(x,pos),DIRECTION.HORIZONTAL);
+                        if (sumArray(v) >= Level)
+                        {
+                            possibleColumn= searchZeroInArray(v)+pos;
+                            if(possibleColumn<n && isPosibleThisPosition(x, possibleColumn))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                pos = y - (Objective - 1) + j;
+                                j++;
+                            }
+                        }
+                        else
+                        {
+                            pos = y - (Objective - 1) + j;
+                            j++;
+                        }
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                possibleColumn = -1;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Chequea la diagonal no principal para colocar una ficha
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="Level"></param>
+        /// <returns></returns>
+        private bool search4KNoMain(int x, int y, out int possibleColumn)
+        {
+            try
+            {
+                possibleColumn = -1;
+                int possibleRow = -1;
+                int[] v = new int[Objective];
+                int posX = x+(Objective-1);
+                int posY = y-(Objective-1);
+                int j = 0;
+                while (j < Objective && posX-(Objective-1)>=0 && posY+(Objective-1)<n)
+                {
+                   
+                    if(posX>m-1 || posY < 0)
+                    {                        
+                        posX = x + (Objective - 1) - j;
+                        posY = y - (Objective - 1) + j;
+                        j++;
+                    }
+                    else
+                    {
+                        v = buildArrayFromA(new Point(posX, posY), DIRECTION.NOMAIN);
+                        if (sumArray(v) >= Level)
+                        {
+                            int zero = searchZeroInArray(v);
+                            possibleColumn = zero+posY;
+                            possibleRow = posX-zero;
+                            if(possibleColumn<n && isPosibleThisPosition(possibleRow, possibleColumn))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                posX = x + (Objective - 1) - j;
+                                posY = y - (Objective - 1) + j;
+                                j++;
+                            }
+
+                        }
+                        else
+                        {
+                            posX = x + (Objective - 1) - j;
+                            posY = y - (Objective - 1) + j;
+                            j++;
+                        }
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                possibleColumn = -1;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Chequea la diagonal principal para colocar una ficha
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="Level"></param>
+        /// <returns></returns>
+        private bool search4KMain(int x, int y,out int possibleColumn)
+        {
+            try
+            {
+                possibleColumn = -1;
+                int possibleRow = -1;
+                int[] v = new int[Objective];
+                int posX = x - (Objective - 1);
+                int posY = y - (Objective - 1);
+                int j = 0;
+                while (j < Objective && posX + (Objective - 1) <m && posY + (Objective - 1) < n)
+                {
+
+                    if (posX <0 || posY < 0)
+                    {
+                        posX = x - (Objective - 1) - j;
+                        posY = y - (Objective - 1) + j;
+                        j++;
+                    }
+                    else
+                    {
+                        v = buildArrayFromA(new Point(posX, posY), DIRECTION.MAIN);
+                        if (sumArray(v) >= Level)
+                        {
+                            int zero = searchZeroInArray(v);
+                            possibleColumn = zero + posY;
+                            possibleRow = posX - zero;
+                            if (possibleColumn < n && isPosibleThisPosition(possibleRow, possibleColumn))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                posX = x - (Objective - 1) - j;
+                                posY = y - (Objective - 1) + j;
+                                j++;
+                            }
+
+                        }
+                        else
+                        {
+                            posX = x - (Objective - 1) - j;
+                            posY = y - (Objective - 1) + j;
+                            j++;
+                        }
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                possibleColumn = -1;
+                return false;
+            }
+        }
+        private enum DIRECTION { HORIZONTAL, NOMAIN, MAIN};
+        /// <summary>
+        /// Construir un array dado una posicion y el sentido
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        private int[] buildArrayFromA(Point p,DIRECTION type)
+        {
+            int[] v = new int[Objective];
+            if (type == DIRECTION.HORIZONTAL)
+            {
+                int j = 0;
+                while (j < Objective && p.Y + j < n)
+                {
+                    v[j] = A[(int)p.X, (int)p.Y + j];
+                    j++;
+                }
+                return v;
+            }else if (type == DIRECTION.NOMAIN)
+            {
+                int j = 0;
+                while(j<Objective && (int)p.X+(Objective-1)-j>=0 && (int)p.Y - (Objective - 1) + j < n)
+                {
+                    v[j] = A[(int)p.X  - j, (int)p.Y + j];
+                    j++;
+                }
+                return v;
+            }else//DIRECTION.MAIN
+            {
+                int j = 0;
+                while (j < Objective && (int)p.X - (Objective - 1) + j <m && (int)p.Y - (Objective - 1) + j < n)
+                {
+                    v[j] = A[(int)p.X  + j, (int)p.Y + j];
+                    j++;
+                }
+                return v;
+            }
+            
+        }
+        /// <summary>
+        /// Esta funcion nos dice si puedo poner una ficha en una posicion o no
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private bool isPosibleThisPosition(int x, int y)
+        {
+            try
+            {
+                if (x == m - 1)//la fila inferior
+                {
+                    return A[x, y] == 0;                    
+                }
+                else
+                {
+                    return (A[x + 1, y] != 0 && A[x,y]==0);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                return false;
+            }
+        }
+        /// <summary>
+        /// Recorre un vector en busca de un elemento cero
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        private int searchZeroInArray(int[] v)
+        {
+            int i = 0;
+            while(i<v.Length && v[i] != 0)
+            {
+                i++;
+            }
+            if (i < v.Length)
+            {
+                return i;
+            }
+            else
+            {
+                return -1;
+            }
         }
         /// <summary>
         /// Metodo para sumar los elementos de un array
@@ -403,7 +743,7 @@ namespace Win01
                 {
                     acc += a;
                 }
-                return acc;
+                return Math.Abs(acc);
             }
             catch (Exception ex)
             {

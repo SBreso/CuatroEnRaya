@@ -29,11 +29,11 @@ namespace Win01
 
         public void resetConfi()
         {            
-            pcOption = false;
+            pcOption = true;
             xDim = 6;
             yDim = 6;
             time = 0;
-            Objective = 6;
+            Objective = 4;
             playerList = new List<Player>();
             loadDefaultIconAndColor();
         }

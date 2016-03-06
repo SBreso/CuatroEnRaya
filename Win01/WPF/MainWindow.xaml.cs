@@ -57,6 +57,8 @@ namespace Win01
         LinearGradientBrush brusStrokeVictory;
         //timer
         DispatcherTimer turnTime;
+        //
+        Point lastPlaceUser;
         #endregion
         /// <summary>
         /// Constructor
@@ -190,6 +192,7 @@ namespace Win01
                         motor.victoryEvent += new Motor.victoryDel(victoryEvent);
                         statuBar.Text = motor.version;
                         motor.Objective = confi.Objective;
+                        motor.Level = 3;
                         motor.run();
                         changeFlag();
                     }
@@ -462,7 +465,8 @@ namespace Win01
                         }
                         row = motor.searchNextZero(colum);//si devuelve -1 la columna esta llena y toca elegir nueva columna
                         if (row != -1)//controlamos que quede espacio, si no, no camnbiamos de turno
-                        {                            
+                        {
+                            lastPlaceUser = new Point(row, colum);                   
                             updateBoard(row, colum);//actualizamos tablero
                             motor.updateA(row, colum,Turn);//actualizamos matriz
                             confi.playerList[0].TiempoAcumulado = (int)(progressBar.Maximum - progressBar.Value);
@@ -516,20 +520,47 @@ namespace Win01
                 Debugger.WriteException(ex, this);
             }
         }
+        /// <summary>
+        /// Controla el turno del PC
+        /// </summary>
         private void machineTurn()
         {
             Random r = new Random();
-            int colum = motor.randomColum();//columna al azar
-            int row = motor.searchNextZero(colum);
-            while (row == -1)
+            int row;
+            int colum;
+            int possibleColumn;
+            if (motor.search4K((int)lastPlaceUser.X, (int)lastPlaceUser.Y, out possibleColumn))
             {
-                colum = motor.randomColum();
+                colum = possibleColumn;
                 row = motor.searchNextZero(colum);
+                if (row < 0)//controlamos que nos de una linea correcta
+                {
+                    colum = motor.randomColum();//columna al azar
+                    row = motor.searchNextZero(colum);
+                    while (row == -1)
+                    {
+                        colum = motor.randomColum();
+                        row = motor.searchNextZero(colum);
+                    }
+                }
+            }
+            else
+            {
+                colum = motor.randomColum();//columna al azar
+                row = motor.searchNextZero(colum);
+                while (row == -1)
+                {
+                    colum = motor.randomColum();
+                    row = motor.searchNextZero(colum);
+                }
             }
             updateBoard(row, colum);
-            int n=r.Next(3, (int)progressBar.Maximum);
-            confi.playerList[1].TiempoAcumulado = n;
-            confi.playerList[1].TiempoAcumuladoTotal = n;
+            if (confi.isTimer)
+            { 
+                int n = r.Next(3, (int)progressBar.Maximum);
+                confi.playerList[1].TiempoAcumulado = n;
+                confi.playerList[1].TiempoAcumuladoTotal = n;
+            }
             motor.updateA(row, colum, Turn);
             if (motor.checkA(row, colum))
             {
@@ -686,8 +717,8 @@ namespace Win01
                 stopTurnTime();
                 if (type == Motor.CONNECT.NULL)
                 {
-                    confi.playerList.ElementAt(0).Ganadas += 1/2;
-                    confi.playerList.ElementAt(1).Ganadas += 1/2;
+                    confi.playerList.ElementAt(0).Ganadas += (float)1/2;
+                    confi.playerList.ElementAt(1).Ganadas += (float)1/2;
                     showVictoryWin("", type);
                 }
                 else
