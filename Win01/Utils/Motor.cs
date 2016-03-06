@@ -407,7 +407,7 @@ namespace Win01
                     Debugger.Write("NoMain 1: "+possibleColumn + "");
                     return true;
                 }//chequeo diagonalNoMain sobre la posicion superior
-                else if (x - 1 >= 0 && !(x - 1 <= Objective - 2 && y <= Objective - 2 - x - 1) && !(x - 1 >= m - (Objective - 1) && y >= n - (x - 1 - m + Objective)) && search4KNoMain(x - 1, y, out possibleColumn))
+                else if (x - 1 >= 0 && !(x - 1 <= Objective - 2 && y <= Objective - 2 - (x - 1)) && !(x - 1 >= m - (Objective - 1) && y >= n - ((x - 1) - m + Objective)) && search4KNoMain(x - 1, y, out possibleColumn))
                 {
                     Debugger.Write("NoMain 2: "+possibleColumn + "");
                     return true;
@@ -470,14 +470,13 @@ namespace Win01
         /// <returns></returns>
         private bool search4KHorizontal(int x, int y, out int possibleColumn)
         {
-            //si encuentra una columna donde colocar la ficha la devuelve, si no devuelve -1
             try
             {
                 possibleColumn = -1;
                 int[] v = new int[Objective];
                 int j = 0;
                 int pos = y - (Objective - 1) + j;                
-                while(j<Objective && pos+Objective<n)
+                while(j<Objective+1 && pos+Objective<n)
                 {
                     pos = y - (Objective - 1) + j;
                     if (pos<0)//la posicion desde donde quiero comprobar esta cerca del borde izq
@@ -534,10 +533,10 @@ namespace Win01
                 int posX = x+(Objective-1);
                 int posY = y-(Objective-1);
                 int j = 0;
-                while (j < Objective && posX-(Objective-1)>=0 && posY+(Objective-1)<n)
+                while (j < Objective+1 && posX-(Objective-1)>=0 && posY+(Objective-1)<n)
                 {
                    
-                    if(posX>m-1 || posY < 0)
+                    if(posX>m-1 || posY <= 0)
                     {                        
                         posX = x + (Objective - 1) - j;
                         posY = y - (Objective - 1) + j;
@@ -597,12 +596,12 @@ namespace Win01
                 int posX = x - (Objective - 1);
                 int posY = y - (Objective - 1);
                 int j = 0;
-                while (j < Objective && posX + (Objective - 1) <m && posY + (Objective - 1) < n)
+                while (j < Objective+1 && posX + (Objective - 1) <m && posY + (Objective - 1) < n)
                 {
 
-                    if (posX <0 || posY < 0)
+                    if (posX <=0 || posY <= 0)
                     {
-                        posX = x - (Objective - 1) - j;
+                        posX = x - (Objective - 1) + j;
                         posY = y - (Objective - 1) + j;
                         j++;
                     }
@@ -613,14 +612,14 @@ namespace Win01
                         {
                             int zero = searchZeroInArray(v);
                             possibleColumn = zero + posY;
-                            possibleRow = posX - zero;
+                            possibleRow = posX + zero;
                             if (possibleColumn < n && isPosibleThisPosition(possibleRow, possibleColumn))
                             {
                                 return true;
                             }
                             else
                             {
-                                posX = x - (Objective - 1) - j;
+                                posX = x - (Objective - 1) + j;
                                 posY = y - (Objective - 1) + j;
                                 j++;
                             }
@@ -628,7 +627,7 @@ namespace Win01
                         }
                         else
                         {
-                            posX = x - (Objective - 1) - j;
+                            posX = x - (Objective - 1) + j;
                             posY = y - (Objective - 1) + j;
                             j++;
                         }
