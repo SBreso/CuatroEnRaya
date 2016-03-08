@@ -16,8 +16,9 @@
 
             <GroupBox Header="Contrincante" Grid.Column="0" Margin="5,10,5,42" Height="97" VerticalAlignment="Center">
                 <StackPanel>
-                    <RadioButton Name="pcOption" Content="Máquina" IsChecked="True"/>
-                    <RadioButton Name="twoPlayersOption" Content="Dos jugadores"/>
+                    <RadioButton Name="pcOption" Content="Máquina" IsChecked="True" Margin="0,2" Click="pcOption_Click"/>
+                    <RadioButton Name="twoPlayersOption" Content="Dos jugadores" Margin="0,2" Checked="twoPlayersOption_Checked"/>
+                    <ComboBox x:Name="comboPcOpponent" Margin="0,2" SelectionChanged="comboPcOpponent_SelectionChanged"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Tamaño" Grid.Column="1" Margin="0,10,10,42" VerticalAlignment="Center" Height="97">

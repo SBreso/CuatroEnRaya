@@ -27,12 +27,14 @@ namespace Win01
         public int Y { get { return y; } set { y = value; } }
         public int Time { get{return time;} set{time=value;} }
         public int Objective { get { return objective; } set { objective = value; } }
+        public int Level { get { return level; } set { level = value; } }
         private bool oponent;//true-->maquina & false-->2 players
         private bool timeIsChecked;
         private int x;
         private int y;
         private int time;
         private int objective;
+        private int level;
         #endregion
         public NewGameWinModal()
         {
@@ -48,10 +50,23 @@ namespace Win01
                 checkOponent(this.oponent);
                 this.sliderTime.Value = time;
                 this.textBlockTime.Text = ((int)sliderTime.Value).ToString();
+                List<String> listOpponents = new List<String>() {"Jar Jar Binks", "Conde Dooku","Darth Maul","Darth Vader","Emperador"};          
+                this.comboPcOpponent.ItemsSource=listOpponents;
+                this.comboPcOpponent.SelectedIndex = level-1;
+                loadTime();
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
+            }
+        }
+        private void loadTime()
+        {
+            if (Level > 3)
+            {
+                timeIsChecked = true;
+                checkTime.IsEnabled = false;
+                time = 20/Level;
             }
         }
         /// <summary>
@@ -124,6 +139,7 @@ namespace Win01
                 {
                     Objective = min;
                 }
+                loadTime();
             }
             catch (Exception ex)
             {
@@ -205,6 +221,24 @@ namespace Win01
             {
                 Debugger.WriteException(ex, this);
             }
+        }
+
+        private void pcOption_Click(object sender, RoutedEventArgs e)
+        {
+            RadioButton rb = (RadioButton)sender;
+            comboPcOpponent.IsEnabled = (bool)rb.IsChecked;
+        }
+
+        private void twoPlayersOption_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton rb = (RadioButton)sender;
+            comboPcOpponent.IsEnabled = !(bool)rb.IsChecked;
+        }
+
+        private void comboPcOpponent_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            level = comboPcOpponent.SelectedIndex+1;
+            loadTime();
         }        
     }
 }

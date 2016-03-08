@@ -147,7 +147,8 @@ namespace Win01
                 newGame.Y = confi.yDim;
                 newGame.Time = confi.time;
                 newGame.Objective = confi.Objective;
-                newGame.ShowDialog();
+                newGame.Level = confi.level;
+                newGame.ShowDialog();                
                 if (newGame.DialogResult == true)
                 {
                     //recibir los parametros
@@ -157,6 +158,7 @@ namespace Win01
                     confi.time = newGame.Time;
                     confi.isTimer = newGame.TimeIsChecked;
                     confi.Objective = newGame.Objective;
+                    confi.level = newGame.Level;
                     //configuramos la progressBar
                     resetProgressBar(confi.time);
                     //mostramos la de jugadores
@@ -192,7 +194,7 @@ namespace Win01
                         motor.victoryEvent += new Motor.victoryDel(victoryEvent);
                         statuBar.Text = motor.version;
                         motor.Objective = confi.Objective;
-                        motor.Level = 3;
+                        motor.Level = confi.Objective-confi.level;
                         motor.run();
                         changeFlag();
                     }
@@ -529,7 +531,7 @@ namespace Win01
             int row;
             int colum;
             int possibleColumn;
-            if (motor.search4K((int)lastPlaceUser.X, (int)lastPlaceUser.Y, out possibleColumn))
+            if (confi.level!=1 && motor.search4K((int)lastPlaceUser.X, (int)lastPlaceUser.Y, out possibleColumn))
             {
                 colum = possibleColumn;
                 row = motor.searchNextZero(colum);

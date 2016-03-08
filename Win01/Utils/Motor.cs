@@ -19,6 +19,7 @@ namespace Win01
         int total;//para controlar el empate
         public int Objective { get; set; }//objetivo, para poder jugar a mas opciones
         public int Level { get; set; }//nivel de deteccion
+        private int iaFlag;
         #endregion
         public Motor(int xDim, int yDim)
         {
@@ -53,6 +54,7 @@ namespace Win01
         /// </summary>
         public void run()
         {
+            iaFlag=Objective-Level;
             total = m * n;
             mode = MODE.ON;
             fillInA();
@@ -387,7 +389,7 @@ namespace Win01
             {
                 //int k = Objective - nivel;//Segun el nivel, putearemos mas o menos
                 //chequeo vertical
-                if(x<=m-Level && search4KVertical(x,y,out possibleColumn))
+                if(x<=m-3 && search4KVertical(x,y,out possibleColumn))
                 {
                     Debugger.Write("Vertical: "+possibleColumn);
                     return true;
@@ -397,7 +399,7 @@ namespace Win01
                     Debugger.Write("Horizontal 1:"+possibleColumn + "");
                     return true;
                 }//hacemos una comprobacion horizontal en la fila superior, para taparlo
-                else if (x - 1 >= 0 && search4KHorizontal(x - 1, y,out possibleColumn))
+                else if (iaFlag >= 3&&  x - 1 >= 0 && search4KHorizontal(x - 1, y,out possibleColumn))
                 {
                     Debugger.Write("Horizontal 2:" + possibleColumn + "");
                     return true;
@@ -407,7 +409,7 @@ namespace Win01
                     Debugger.Write("NoMain 1: "+possibleColumn + "");
                     return true;
                 }//chequeo diagonalNoMain sobre la posicion superior
-                else if (x - 1 >= 0 && !(x - 1 <= Objective - 2 && y <= Objective - 2 - (x - 1)) && !(x - 1 >= m - (Objective - 1) && y >= n - ((x - 1) - m + Objective)) && search4KNoMain(x - 1, y, out possibleColumn))
+                else if (iaFlag >= 3 && x - 1 >= 0 && !(x - 1 <= Objective - 2 && y <= Objective - 2 - (x - 1)) && !(x - 1 >= m - (Objective - 1) && y >= n - ((x - 1) - m + Objective)) && search4KNoMain(x - 1, y, out possibleColumn))
                 {
                     Debugger.Write("NoMain 2: "+possibleColumn + "");
                     return true;
@@ -417,7 +419,7 @@ namespace Win01
                     Debugger.Write("Main 1: "+possibleColumn + "");
                     return true;
                 }//chequeo diagonalMain sobre la posicion superior
-                else if (x - 1 >= 0 && !(x - 1 <= Objective - 1 && y >= n - Objective + 1 + x - 1) && !(x - 1 >= m - Objective + 1 && y <= x - 1 - m + Objective - 1) && search4KMain(x - 1, y, out possibleColumn))
+                else if (iaFlag >= 3 &&  x - 1 >= 0 && !(x - 1 <= Objective - 1 && y >= n - Objective + 1 + x - 1) && !(x - 1 >= m - Objective + 1 && y <= x - 1 - m + Objective - 1) && search4KMain(x - 1, y, out possibleColumn))
                 {
                     Debugger.Write("Main 2: "+possibleColumn + "");
                     return true;
@@ -447,12 +449,12 @@ namespace Win01
             try
             {
                 int i = 1;
-                while(i<Level && x+i<m && A[x, y] == A[x + i, y])
+                while(i<3 && x+i<m && A[x, y] == A[x + i, y])
                 {
                     i++;
                 }
                 possibleColumn = y;
-                return i == Level;
+                return i == 3;
             }
             catch (Exception ex)
             {
@@ -476,7 +478,7 @@ namespace Win01
                 int[] v = new int[Objective];
                 int j = 0;
                 int pos = y - (Objective - 1) + j;                
-                while(j<Objective+1 && pos+Objective<n)
+                while(j<Objective+1 && pos+Objective-1<n)
                 {
                     pos = y - (Objective - 1) + j;
                     if (pos<0)//la posicion desde donde quiero comprobar esta cerca del borde izq
@@ -487,10 +489,11 @@ namespace Win01
                     else
                     {
                         v = buildArrayFromA(new Point(x,pos),DIRECTION.HORIZONTAL);
-                        if (sumArray(v) >= Level)
+                        if (sumArray(v) >= 3)
                         {
-                            possibleColumn= searchZeroInArray(v)+pos;
-                            if(possibleColumn<n && isPosibleThisPosition(x, possibleColumn))
+                            int k = searchZeroInArray(v);
+                            possibleColumn= k+pos;
+                            if( k!=-1 && possibleColumn<n && isPosibleThisPosition(x, possibleColumn))
                             {
                                 return true;
                             }
@@ -536,7 +539,7 @@ namespace Win01
                 while (j < Objective+1 && posX-(Objective-1)>=0 && posY+(Objective-1)<n)
                 {
                    
-                    if(posX>m-1 || posY <= 0)
+                    if(posX>m-1 || posY < 0)
                     {                        
                         posX = x + (Objective - 1) - j;
                         posY = y - (Objective - 1) + j;
@@ -545,7 +548,7 @@ namespace Win01
                     else
                     {
                         v = buildArrayFromA(new Point(posX, posY), DIRECTION.NOMAIN);
-                        if (sumArray(v) >= Level)
+                        if (sumArray(v) >= 3)
                         {
                             int zero = searchZeroInArray(v);
                             possibleColumn = zero+posY;
@@ -599,7 +602,7 @@ namespace Win01
                 while (j < Objective+1 && posX + (Objective - 1) <m && posY + (Objective - 1) < n)
                 {
 
-                    if (posX <=0 || posY <= 0)
+                    if (posX <0 || posY < 0)
                     {
                         posX = x - (Objective - 1) + j;
                         posY = y - (Objective - 1) + j;
@@ -608,7 +611,7 @@ namespace Win01
                     else
                     {
                         v = buildArrayFromA(new Point(posX, posY), DIRECTION.MAIN);
-                        if (sumArray(v) >= Level)
+                        if (sumArray(v) >= 3)
                         {
                             int zero = searchZeroInArray(v);
                             possibleColumn = zero + posY;

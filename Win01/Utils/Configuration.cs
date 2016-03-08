@@ -20,6 +20,7 @@ namespace Win01
         public List<Player> playerList;
         public List<SolidColorBrush> colorsList;
         public List<BitmapImage> iconList;
+        public int level;
         public Configuration(List<BitmapImage> il, List<SolidColorBrush> cl)
         {
             iconList = il;
@@ -33,6 +34,7 @@ namespace Win01
             xDim = 6;
             yDim = 6;
             time = 0;
+            level = 1;
             Objective = 4;
             playerList = new List<Player>();
             loadDefaultIconAndColor();
