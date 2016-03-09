@@ -24,7 +24,7 @@ namespace Win01
         public bool PcOption { get { return pcOption; } set { pcOption = value; } }
         private List<Player> players;
         private bool pcOption;
-
+        public List<BitmapImage> iconList { get; set; }
         public PlayersWinModal()
         {
             InitializeComponent();            
@@ -85,17 +85,25 @@ namespace Win01
         {
             try
             {
-                OpenFileDialog openFile = new OpenFileDialog();
-                openFile.Filter = "Archivos de imágen (.jpg)|*.jpg|All Files (*.*)|*.*";
-                openFile.Multiselect = false;
-                if (openFile.ShowDialog() == true)
-                {
-                    players[tabControl.SelectedIndex].URIFoto = openFile.FileName;
+            //    OpenFileDialog openFile = new OpenFileDialog();
+            //    openFile.Filter = "Archivos de imágen (.jpg)|*.jpg|All Files (*.*)|*.*";
+            //    openFile.Multiselect = false;
+            //    if (openFile.ShowDialog() == true)
+            //    {
+            //        players[tabControl.SelectedIndex].URIFoto = openFile.FileName;
                     
-                    //players[tabControl.SelectedIndex].RaisePropertyChanged("URIFoto");
+            //        //players[tabControl.SelectedIndex].RaisePropertyChanged("URIFoto");
+            //    }
+            //    tabControl.Items.Refresh();
+            //    //tabControl.Items.Refresh();
+                AvatarWin avatarWin = new AvatarWin();
+                avatarWin.iconList=iconList;
+                avatarWin.iconChoosed=players[tabControl.SelectedIndex].Foto;
+                avatarWin.Show();
+                if (avatarWin.DialogResult == true)
+                {
+                    players[tabControl.SelectedIndex].Foto = avatarWin.iconChoosed;
                 }
-                tabControl.Items.Refresh();
-                //tabControl.Items.Refresh();
             }
             catch (Exception ex)
             {

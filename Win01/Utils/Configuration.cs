@@ -33,7 +33,7 @@ namespace Win01
             pcOption = true;
             xDim = 6;
             yDim = 6;
-            time = 0;
+            time = 10;
             level = 1;
             Objective = 4;
             playerList = new List<Player>();

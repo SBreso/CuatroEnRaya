@@ -51,8 +51,6 @@ namespace Win01
                 this.sliderTime.Value = time;
                 this.textBlockTime.Text = ((int)sliderTime.Value).ToString();
                 List<String> listOpponents = new List<String>() {"Jar Jar Binks", "Conde Dooku","Darth Maul","Darth Vader","Emperador"};          
-                this.comboPcOpponent.ItemsSource=listOpponents;
-                this.comboPcOpponent.SelectedIndex = level-1;
                 loadTime();
             }
             catch (Exception ex)
@@ -226,19 +224,13 @@ namespace Win01
         private void pcOption_Click(object sender, RoutedEventArgs e)
         {
             RadioButton rb = (RadioButton)sender;
-            comboPcOpponent.IsEnabled = (bool)rb.IsChecked;
+            chooseOpponent.IsEnabled = (bool)rb.IsChecked;
         }
 
         private void twoPlayersOption_Checked(object sender, RoutedEventArgs e)
         {
             RadioButton rb = (RadioButton)sender;
-            comboPcOpponent.IsEnabled = !(bool)rb.IsChecked;
-        }
-
-        private void comboPcOpponent_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            level = comboPcOpponent.SelectedIndex+1;
-            loadTime();
-        }        
+            chooseOpponent.IsEnabled = !(bool)rb.IsChecked;
+        }    
     }
 }
