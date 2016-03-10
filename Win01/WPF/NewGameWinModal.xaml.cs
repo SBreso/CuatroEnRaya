@@ -35,6 +35,8 @@ namespace Win01
         private int time;
         private int objective;
         private int level;
+
+        public List<Player> pcOpponents { get; set; }
         #endregion
         public NewGameWinModal()
         {
@@ -49,8 +51,7 @@ namespace Win01
                 this.textObjective.Text = objective.ToString();
                 checkOponent(this.oponent);
                 this.sliderTime.Value = time;
-                this.textBlockTime.Text = ((int)sliderTime.Value).ToString();
-                List<String> listOpponents = new List<String>() {"Jar Jar Binks", "Conde Dooku","Darth Maul","Darth Vader","Emperador"};          
+                this.textBlockTime.Text = ((int)sliderTime.Value).ToString();                
                 loadTime();
             }
             catch (Exception ex)
@@ -231,6 +232,30 @@ namespace Win01
         {
             RadioButton rb = (RadioButton)sender;
             chooseOpponent.IsEnabled = !(bool)rb.IsChecked;
+        }
+
+        private void chooseOpponent_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                BitmapImage img = new BitmapImage();
+                List<BitmapImage> iconMachine = new List<BitmapImage>();
+                foreach (Player p in pcOpponents)
+                {
+                    iconMachine.Add(p.Foto);
+                }
+                AvatarWin a = new AvatarWin();
+                a.iconList = iconMachine;
+                a.ShowDialog();
+                if (a.DialogResult == true)
+                {
+                    img = a.iconChoosed;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+            }
         }    
     }
 }

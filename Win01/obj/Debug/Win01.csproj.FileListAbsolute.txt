@@ -86,3 +86,5 @@ C:\Users\Equipo\Desktop\VORO\FourConnect\Win01\obj\Debug\Win01.Properties.Resour
 C:\Users\Equipo\Desktop\VORO\FourConnect\Win01\obj\Debug\Win01.csproj.GenerateResource.Cache
 C:\Users\Equipo\Desktop\VORO\FourConnect\Win01\obj\Debug\FourConnect.exe
 C:\Users\Equipo\Desktop\VORO\FourConnect\Win01\obj\Debug\FourConnect.pdb
+C:\Users\Equipo\Desktop\VORO\FourConnect\Win01\obj\Debug\WPF\AvatarWin.baml
+C:\Users\Equipo\Desktop\VORO\FourConnect\Win01\obj\Debug\WPF\AvatarWin.g.cs

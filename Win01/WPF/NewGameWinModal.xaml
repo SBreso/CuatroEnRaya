@@ -24,7 +24,7 @@
                 <WrapPanel Orientation="Vertical">
                     <RadioButton Name="pcOption" Content="Máquina" IsChecked="True" Margin="0,4" Click="pcOption_Click"/>
                     <RadioButton Name="twoPlayersOption" Content="Dos jugadores" Margin="0,4" Checked="twoPlayersOption_Checked"/>
-                    <Button x:Name="chooseOpponent" FontWeight="Bold" Background="{x:Null}" BorderBrush="#FF1224D3" Foreground="#FF1224D3" Margin="5" BorderThickness="2">Elige oponente</Button>
+                    <Button x:Name="chooseOpponent" FontWeight="Bold" Background="{x:Null}" BorderBrush="#FF1224D3" Foreground="#FF1224D3" Margin="5" BorderThickness="2" Click="chooseOpponent_Click">Elige oponente</Button>
                 </WrapPanel>
             </GroupBox>
             <GroupBox Header="Tamaño" Grid.Column="1"  Height="120" VerticalAlignment="Center" Margin="3" FontWeight="Bold">

@@ -21,6 +21,8 @@ namespace Win01
         public List<SolidColorBrush> colorsList;
         public List<BitmapImage> iconList;
         public int level;
+        
+        public String[] machineName;
         public Configuration(List<BitmapImage> il, List<SolidColorBrush> cl)
         {
             iconList = il;
@@ -38,6 +40,7 @@ namespace Win01
             Objective = 4;
             playerList = new List<Player>();
             loadDefaultIconAndColor();
+            machineName = new String[5] { "Han Solo", "Soldado Imperial", "Boba Fett", "Darth Vader", "Emperador Palpatine" };
         }
         public void DefaultGamers()
         {
@@ -116,6 +119,26 @@ namespace Win01
                 Debugger.WriteException(ex, this);
                 return null;
             }
+        }
+
+        public List<Player> createPCOpponents()
+        {
+            try
+            {
+                List<Player> listOpponent =new List<Player>();
+                int i = 0;
+                foreach (BitmapImage bi in iconList.GetRange(7, 5))
+                {
+                    listOpponent.Add(new Player(machineName[i++], bi, colorsList[colorsList.Count - 1]));
+                }
+                return listOpponent;
+            }
+            catch (Exception ex)
+            {
+                Debugger.WriteException(ex, this);
+                return null;
+            }
+
         }
 
         public void showPlayersDetail()

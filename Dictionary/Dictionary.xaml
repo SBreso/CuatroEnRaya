@@ -9,18 +9,19 @@
         <SolidColorBrush>#FFAACACA</SolidColorBrush>
     </x:Array>
     <x:Array x:Key="Icons" Type="{x:Type BitmapImage}">
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-01.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-02.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-03.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-04.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-05.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-06.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-07.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-08.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-09.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-10.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-11.png"/>
-    <BitmapImage UriSource="./Images/Star_wars_longshadow-12.png"/>
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-01.png"/>    
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-03.png"/>
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-04.png"/>    
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-06.png"/>
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-07.png"/>            
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-10.png"/>
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-12.png"/>
+        <!--Avatar oponentes-->
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-09.png"/>
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-05.png"/>        
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-11.png"/>
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-02.png"/>
+        <BitmapImage UriSource="./Images/Star_wars_longshadow-08.png"/>
     </x:Array>
     <LinearGradientBrush x:Key="linearGradientFill">
     <LinearGradientBrush.RelativeTransform>

@@ -47,7 +47,7 @@ namespace Win01
             }
             else
             {
-                Console.WriteLine("LOG: " + s);
+                Console.WriteLine((i++) + ")LOG: " + s);
             }
         }
     }

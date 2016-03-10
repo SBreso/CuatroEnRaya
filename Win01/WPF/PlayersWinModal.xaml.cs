@@ -47,26 +47,38 @@ namespace Win01
             List<SolidColorBrush> colorsList = ((Array)FindResource("Colors")).Cast<SolidColorBrush>().ToList();
             if (!pcOption)
             {
-                if (players[0].ColorPieza.Equals(players[1].ColorPieza))
+                if (!players[0].ColorPieza.Equals(players[1].ColorPieza) && !String.IsNullOrEmpty(players[tabControl.SelectedIndex].Nombre))
+                {
+                    Debugger.Write(players[tabControl.SelectedIndex].Nombre);
+                    DialogResult = true;
+                }
+                else if (players[0].ColorPieza.Equals(players[1].ColorPieza))
                 {
                     DialogResult = null;
                     MessageBox.Show("Los colores no pueden coincidir", "¡¡Error!!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    DialogResult = true;
+                    DialogResult = null;
+                    MessageBox.Show("Pon un nombre", "¡¡Error!!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else
             {
-                if (players[0].ColorPieza.Equals(colorsList[colorsList.Count - 1]))
+                if (!players[0].ColorPieza.Equals(colorsList[colorsList.Count-1]) && !String.IsNullOrEmpty(players[tabControl.SelectedIndex].Nombre))
+                {
+                    Debugger.Write(players[tabControl.SelectedIndex].Nombre);
+                    DialogResult = true;
+                }
+                else if (players[0].ColorPieza.Equals(colorsList[colorsList.Count-1]))
                 {
                     DialogResult = null;
                     MessageBox.Show("Los colores no pueden coincidir", "¡¡Error!!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    DialogResult = true;
+                    DialogResult = null;
+                    MessageBox.Show("Pon un nombre", "¡¡Error!!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             
@@ -85,30 +97,25 @@ namespace Win01
         {
             try
             {
-            //    OpenFileDialog openFile = new OpenFileDialog();
-            //    openFile.Filter = "Archivos de imágen (.jpg)|*.jpg|All Files (*.*)|*.*";
-            //    openFile.Multiselect = false;
-            //    if (openFile.ShowDialog() == true)
-            //    {
-            //        players[tabControl.SelectedIndex].URIFoto = openFile.FileName;
-                    
-            //        //players[tabControl.SelectedIndex].RaisePropertyChanged("URIFoto");
-            //    }
-            //    tabControl.Items.Refresh();
-            //    //tabControl.Items.Refresh();
                 AvatarWin avatarWin = new AvatarWin();
-                avatarWin.iconList=iconList;
+                avatarWin.iconList=iconList;                
                 avatarWin.iconChoosed=players[tabControl.SelectedIndex].Foto;
-                avatarWin.Show();
+                avatarWin.ShowDialog();
                 if (avatarWin.DialogResult == true)
                 {
                     players[tabControl.SelectedIndex].Foto = avatarWin.iconChoosed;
+                    resetName();
+                    tabControl.Items.Refresh();                         
                 }
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
             }
+        }
+        private void resetName()
+        {
+            players[tabControl.SelectedIndex].Nombre = "";
         }
         /// <summary>
         /// Controlamos que el nombre del jugador cambie

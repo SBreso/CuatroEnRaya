@@ -449,7 +449,7 @@ namespace Win01
             try
             {
                 int i = 1;
-                while(i<3 && x+i<m && A[x, y] == A[x + i, y])
+                while(i<Objective-1 && x+i<m && A[x, y] == A[x + i, y])
                 {
                     i++;
                 }
@@ -489,7 +489,7 @@ namespace Win01
                     else
                     {
                         v = buildArrayFromA(new Point(x,pos),DIRECTION.HORIZONTAL);
-                        if (sumArray(v) >= 3)
+                        if (sumArray(v) >= Objective - 1)
                         {
                             int k = searchZeroInArray(v);
                             possibleColumn= k+pos;
@@ -548,7 +548,7 @@ namespace Win01
                     else
                     {
                         v = buildArrayFromA(new Point(posX, posY), DIRECTION.NOMAIN);
-                        if (sumArray(v) >= 3)
+                        if (sumArray(v) >= Objective - 1)
                         {
                             int zero = searchZeroInArray(v);
                             possibleColumn = zero+posY;
@@ -611,7 +611,7 @@ namespace Win01
                     else
                     {
                         v = buildArrayFromA(new Point(posX, posY), DIRECTION.MAIN);
-                        if (sumArray(v) >= 3)
+                        if (sumArray(v) >= Objective - 1)
                         {
                             int zero = searchZeroInArray(v);
                             possibleColumn = zero + posY;

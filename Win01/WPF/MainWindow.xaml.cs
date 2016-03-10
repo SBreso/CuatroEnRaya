@@ -148,6 +148,7 @@ namespace Win01
                 newGame.Time = confi.time;
                 newGame.Objective = confi.Objective;
                 newGame.Level = confi.level;
+                newGame.pcOpponents = confi.createPCOpponents();
                 newGame.ShowDialog();                
                 if (newGame.DialogResult == true)
                 {
@@ -168,6 +169,7 @@ namespace Win01
                     playersWinModal.PcOption = confi.pcOption;
                     confi.DefaultGamers();//creamos los jugadores por defecto 1 ó 2                   
                     playersWinModal.Players = confi.playerList;
+                    playersWinModal.iconList = confi.iconList.GetRange(0,7);
                     //playersWinModal.config = confi;
                     playersWinModal.ShowDialog();
                     if (playersWinModal.DialogResult == true)
