@@ -142,7 +142,7 @@ namespace Win01
                 NewGameWinModal newGame = new NewGameWinModal();
                 //pasar los parametros
                 newGame.Owner = this;
-                newGame.Oponent = confi.pcOption;
+                newGame.PcOponent = confi.pcOption;
                 newGame.X = confi.xDim;
                 newGame.Y = confi.yDim;
                 newGame.Time = confi.time;
@@ -155,7 +155,7 @@ namespace Win01
                     //recibir los parametros
                     confi.xDim = newGame.X;
                     confi.yDim = newGame.Y;
-                    confi.pcOption = newGame.Oponent;
+                    confi.pcOption = newGame.PcOponent;
                     confi.time = newGame.Time;
                     confi.isTimer = newGame.TimeIsChecked;
                     confi.Objective = newGame.Objective;
@@ -181,7 +181,8 @@ namespace Win01
                         if (confi.pcOption)//si es contra la maquina, lo creo y lo muestro
                         {
                             opponent = OPPONENT.PC;
-                            this.playerTwo.Content = confi.createPC();
+                            this.playerTwo.Content = newGame.Machine;
+                            confi.playerList.Add(newGame.Machine);
                         }
                         else//si es contra un amigo, ya lo tengo creado por defecto, y lo muestro
                         {
@@ -197,6 +198,7 @@ namespace Win01
                         statuBar.Text = motor.version;
                         motor.Objective = confi.Objective;
                         motor.Level = confi.Objective-confi.level;
+                        Debugger.Write(motor.Level+"");
                         motor.run();
                         changeFlag();
                     }

@@ -454,7 +454,7 @@ namespace Win01
                     i++;
                 }
                 possibleColumn = y;
-                return i == 3;
+                return i == Objective-1;
             }
             catch (Exception ex)
             {

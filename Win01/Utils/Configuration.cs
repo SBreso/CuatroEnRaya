@@ -88,10 +88,10 @@ namespace Win01
             try
             {
                 Random r = new Random();
-                defaultIcon2PlayerOne = r.Next(0, iconList.Count-2);//dejamos el ultimo para el pc
+                defaultIcon2PlayerOne = r.Next(0, iconList.Count-5);//dejamos el ultimo para el pc
                 defaultColor2PlayerOne = defaultIcon2PlayerOne % (colorsList.Count-1);                
                 int m = r.Next(0, iconList.Count);
-                while ( m== defaultIcon2PlayerTwo)
+                while ( m== defaultIcon2PlayerOne)
                 {
                     m=r.Next(0, iconList.Count);
                 }
@@ -103,24 +103,10 @@ namespace Win01
                 Debugger.WriteException(ex, this);
             }
         }
-        public Player createPC()
-        {
-            try
-            {
-                Player pc = new Player();
-                pc.Nombre = "Maquina";
-                pc.Foto = iconList[iconList.Count-1];
-                pc.ColorPieza = colorsList[colorsList.Count-1];                
-                if (pcOption) { playerList.Add(pc); }
-                return pc;
-            }
-            catch (Exception ex) 
-            {
-                Debugger.WriteException(ex, this);
-                return null;
-            }
-        }
-
+        /// <summary>
+        /// Crea la lista de contrincantes machine
+        /// </summary>
+        /// <returns></returns>
         public List<Player> createPCOpponents()
         {
             try

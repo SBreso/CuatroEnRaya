@@ -98,6 +98,7 @@ namespace Win01
             try
             {
                 AvatarWin avatarWin = new AvatarWin();
+                avatarWin.Owner = this;
                 avatarWin.iconList=iconList;                
                 avatarWin.iconChoosed=players[tabControl.SelectedIndex].Foto;
                 avatarWin.ShowDialog();

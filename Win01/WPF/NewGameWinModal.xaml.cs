@@ -21,20 +21,14 @@ namespace Win01
     public partial class NewGameWinModal : Window
     {
         #region
-        public bool Oponent { get{return oponent;} set{oponent=value;} }
-        public bool TimeIsChecked { get{return timeIsChecked;} set{timeIsChecked=value;}}
-        public int X { get { return x; } set { x = value; } }
-        public int Y { get { return y; } set { y = value; } }
-        public int Time { get{return time;} set{time=value;} }
-        public int Objective { get { return objective; } set { objective = value; } }
-        public int Level { get { return level; } set { level = value; } }
-        private bool oponent;//true-->maquina & false-->2 players
-        private bool timeIsChecked;
-        private int x;
-        private int y;
-        private int time;
-        private int objective;
-        private int level;
+        public bool PcOponent { get; set ; }
+        public bool TimeIsChecked { get; set;}
+        public int X { get ; set ; }
+        public int Y { get ;set ; }
+        public int Time { get; set; }
+        public int Objective { get ; set; }
+        public int Level { get ; set; }
+        public Player Machine { get; set; }
 
         public List<Player> pcOpponents { get; set; }
         #endregion
@@ -46,11 +40,11 @@ namespace Win01
         {
             try
             {
-                this.textX.Text = x.ToString();
-                this.textY.Text = y.ToString();
-                this.textObjective.Text = objective.ToString();
-                checkOponent(this.oponent);
-                this.sliderTime.Value = time;
+                this.textX.Text = X.ToString();
+                this.textY.Text = Y.ToString();
+                this.textObjective.Text = Objective.ToString();
+                checkOponent(PcOponent);
+                this.sliderTime.Value = Time;
                 this.textBlockTime.Text = ((int)sliderTime.Value).ToString();                
                 loadTime();
             }
@@ -63,9 +57,9 @@ namespace Win01
         {
             if (Level > 3)
             {
-                timeIsChecked = true;
+                TimeIsChecked = true;
                 checkTime.IsEnabled = false;
-                time = 20/Level;
+                Time = 20/Level;
             }
         }
         /// <summary>
@@ -128,11 +122,11 @@ namespace Win01
                 }
                 Time = (int)this.sliderTime.Value;
                 TimeIsChecked = (bool)this.checkTime.IsChecked;
-                Oponent = whatOponent();
+                PcOponent = whatOponent();
                 DialogResult = true;
                 //si el tiempo es cero, es como si no se chequeara
                 if (Time == 0) { TimeIsChecked = false; }
-                int min = Math.Min(x, y);
+                int min = Math.Min(X, Y);
                 Objective = Int32.Parse(this.textObjective.Text);
                 if (Objective > min)
                 {
@@ -245,17 +239,29 @@ namespace Win01
                     iconMachine.Add(p.Foto);
                 }
                 AvatarWin a = new AvatarWin();
+                a.Owner = this;
                 a.iconList = iconMachine;
                 a.ShowDialog();
                 if (a.DialogResult == true)
                 {
                     img = a.iconChoosed;
                 }
+                searchOpponent(img);
             }
             catch (Exception ex)
             {
                 Debugger.WriteException(ex, this);
             }
-        }    
+        }
+        private void searchOpponent(BitmapImage img)
+        {
+            int i = 0;
+            while (i < pcOpponents.Count && !pcOpponents[i].Foto.Equals(img))
+            {
+                i++;
+            }
+            Level = i+1;
+            Machine= pcOpponents[i];
+        }
     }
 }
